@@ -1,0 +1,16 @@
+﻿<Window x:Class="DeanCCGUIWpfVersion.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525" Icon="/DeanCCGUIWpfVersion;component/Images/mainicon.ico" Loaded="Window_Loaded" xmlns:my="clr-namespace:DeanCCGUIWpfVersion">
+    <Grid>
+        <my:ThreadView AutoGenerateColumns="True" Height="287" HorizontalAlignment="Left" Margin="160,12,0,0" x:Name="threadView1" VerticalAlignment="Top" Width="317">
+            <my:ThreadView.Columns>
+                <DataGridTextColumn Binding="{Binding Path=Title, Mode=OneWay}" CanUserReorder="False" CanUserResize="False" CanUserSort="False" Header="" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Path=DownloadedCount, Mode=OneWay}" CanUserReorder="False" CanUserResize="False" CanUserSort="False" Header="" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Path=ResSpeed, Mode=OneWay}" CanUserReorder="False" CanUserResize="False" CanUserSort="False" Header="" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Path=Since, Mode=OneWay}" CanUserReorder="False" CanUserResize="False" CanUserSort="False" Header="" IsReadOnly="True" />
+            </my:ThreadView.Columns>
+        </my:ThreadView>
+        <TreeView Height="287" HorizontalAlignment="Left" Margin="20,12,0,0" Name="treeView1" VerticalAlignment="Top" Width="120" />
+    </Grid>
+</Window>

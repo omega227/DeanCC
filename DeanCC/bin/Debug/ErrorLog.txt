@@ -1,0 +1,49 @@
+このファイルにはDeanCCで発生した致命的なエラーが記録されます。
+エラーの内容と直前の操作を作者に報告してください。詳しい連絡先はreadme.txtを参照してください。
+
+2012/03/06 18:14:06
+=======▼ここから▼=======
+DeanCC 5.5.4
+System.ApplicationException: test
+   場所 DeanCCCore.Core._2ch.Thread.Run() 場所 I:\DeanCCProject\DeanCCCore\Core\2ch\Thread.cs:行 189
+   場所 DeanCCCore.Core.ImageDownloader.<Run>b__1(Thread thread) 場所 I:\DeanCCProject\DeanCCCore\Core\ImageDownloader.cs:行 38
+   場所 System.Threading.Tasks.Parallel.<>c__DisplayClass32`2.<PartitionerForEachWorker>b__30()
+   場所 System.Threading.Tasks.Task.InnerInvoke()
+   場所 System.Threading.Tasks.Task.InnerInvokeWithArg(Task childTask)
+   場所 System.Threading.Tasks.Task.<>c__DisplayClass7.<ExecuteSelfReplicating>b__6(Object )
+=======▲ここまで▲=======
+2012/03/06 18:16:49
+=======▼ここから▼=======
+DeanCC 5.5.4
+System.ApplicationException: test
+   場所 DeanCCCore.Core._2ch.Thread.Run() 場所 I:\DeanCCProject\DeanCCCore\Core\2ch\Thread.cs:行 189
+   場所 DeanCCCore.Core.ImageDownloader.<Run>b__1(Thread thread) 場所 I:\DeanCCProject\DeanCCCore\Core\ImageDownloader.cs:行 38
+   場所 System.Threading.Tasks.Parallel.<>c__DisplayClass32`2.<PartitionerForEachWorker>b__30()
+   場所 System.Threading.Tasks.Task.InnerInvoke()
+   場所 System.Threading.Tasks.Task.InnerInvokeWithArg(Task childTask)
+   場所 System.Threading.Tasks.Task.<>c__DisplayClass7.<ExecuteSelfReplicating>b__6(Object )
+=======▲ここまで▲=======
+2012/03/06 18:17:45
+=======▼ここから▼=======
+DeanCC 5.5.4
+System.ApplicationException: test
+   場所 DeanCCCore.Core._2ch.Thread.Run() 場所 I:\DeanCCProject\DeanCCCore\Core\2ch\Thread.cs:行 189
+   場所 DeanCCCore.Core.ImageDownloader.<Run>b__1(Thread thread) 場所 I:\DeanCCProject\DeanCCCore\Core\ImageDownloader.cs:行 38
+   場所 System.Threading.Tasks.Parallel.<>c__DisplayClass32`2.<PartitionerForEachWorker>b__30()
+   場所 System.Threading.Tasks.Task.InnerInvoke()
+   場所 System.Threading.Tasks.Task.InnerInvokeWithArg(Task childTask)
+   場所 System.Threading.Tasks.Task.<>c__DisplayClass7.<ExecuteSelfReplicating>b__6(Object )
+=======▲ここまで▲=======
+
+2012/03/06 18:18:07
+=======▼ここから▼=======
+DeanCC 5.5.4
+System.ApplicationException: test
+   場所 DeanCCCore.Core._2ch.Thread.Run() 場所 I:\DeanCCProject\DeanCCCore\Core\2ch\Thread.cs:行 189
+   場所 DeanCCCore.Core.ImageDownloader.<Run>b__1(Thread thread) 場所 I:\DeanCCProject\DeanCCCore\Core\ImageDownloader.cs:行 38
+   場所 System.Threading.Tasks.Parallel.<>c__DisplayClass32`2.<PartitionerForEachWorker>b__30()
+   場所 System.Threading.Tasks.Task.InnerInvoke()
+   場所 System.Threading.Tasks.Task.InnerInvokeWithArg(Task childTask)
+   場所 System.Threading.Tasks.Task.<>c__DisplayClass7.<ExecuteSelfReplicating>b__6(Object )
+=======▲ここまで▲=======
+

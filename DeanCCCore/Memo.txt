@@ -1,0 +1,176 @@
+﻿ファイル構造
+・2ch
+BoardTable(Root)
++-Category
+...
++-Category(雑談系2)
+ +-BoardInfo(ニュー速VIP)
+ ...
+
+ PatrolTable(Root)
+ +-GenreFolder
+ ...
+ +-GenreFolder(保存フォルダー)
+  +-PatrolPattern(巡回設定)
+  ...
+
+ 役割
+ PatrolThreads:パターンにマッチするスレッドをSubject.txtから取得
+ Thread:dat取得と画像取得
+
+ Thread(ヘッダ情報と画像情報を保持して、DL実行)
+  +ThreadHeaderCollection
+  +ImageHeaderCollection
+   +Url,MD5,SavePathを保持
+
+
+・2011/02/01 , 2011/02/10
+
+Binding
+バインド => DataGridView.DataSourceプロパティにBindingSourceを初期化して代入
+AutoGenerateColumn = ture(規定値) のときの表示方法
+・表示名 => [DisplayName("表示名")]　の属性を付ける
+・非表示 => [Browsable(false)] の属性を付ける
+・プログレスバー列 => [DataGridViewColumnType(ProgressBar)] の属性を付ける
+
+・2011/02/02
+
+コンストラクタのガイドライン
+http://msdn.microsoft.com/ja-jp/library/ms229060(VS.80).aspx
+・コンストラクタは簡素に設計 => 引数の数は少なく、型は組み込み型もしくは列挙型
+・コンストラクタでの処理は最小限に設計 => メンバの初期化などだけにとどめる
+・不適切な入力・状態に対しては例外をスローする
+・これらのガイドラインに沿えない場合は静的ファクトリメソッドを検討する
+
+イベントのガイドライン
+http://msdn.microsoft.com/ja-jp/library/ms229011.aspx
+・非静的イベントのsenderにはnullを渡してはいけない
+・静的イベントのsenderにはnull渡す
+・キャンセル可能なイベントは基本型にCancelEventArgsを使う
+
+・2011/02/03
+
+オプションの追加手順
+・OptionControlを継承したクラスを作成(または、IOptionsを実装したUserControlを作成)※コンストラクタにInitializeComponentを追加する
+・OptionsCollectionに追加
+・OptionsFormのツリーにNode追加・NameをOptionsCollectionと合わせる
+
+・2011/02/06
+
+DeanCCのフォーマット
+ThreadHeader
+%title%     スレタイ 
+%category%	カテゴリー（雑談系2）
+%board%		板（ニュー速VIP）
+%key%		スレキー（番号）
+%since%		スレ立て日
+
+
+・2011/02/08
+
+スレッドビューの完了（プログレス）列の値
+新着レス（画像URL）取得 0%
+ダウンロード中 0%→100%
+ダウンロード完了~ 100%
+
+未取得、一時停止スレッドは常に0%
+(ダウンロード完了スレッドは常に100%)
+
+
+列挙型(enum)の名前には単数形にする
+ビットフィールド列挙型(Flag)の名前には複数形
+
+・2011/02/10
+
+仕様
+パス付画像をもつスレッドリストは通常画像がダウンロードが完了すると削除される
+パス付画像もダウンロード完了後に削除するようにするには、DownloadCompletedの条件に、
+ImageHeader.Secureがfalseであること追加する(ユーザーが手動でパス付画像をダウンロードorあきらめて削除したら、
+ImageHeader.Secureをfalseにセットするように変更）
+
+・2011/03/06
+
+不具合
+datのファイル名が変わると（フォーマット変更、スレキー変更）FileNotFoundExeption発生
+→ファイル名は最初に呼び出されたときに初期化して、キャッシュしておく
+→修正2011/03/26
+
+板移転した場合は、取得済みのスレッドUrl処理、巡回設定のUrlの変更処理をする
+
+・2011/03/12
+
+不具合
+返答に時間のかかるサーバーからDL中にクライアントを終了すると、DLメソッドを抜け出さない
+→無視すると、DownloadingイベントがMainformにアクセスしてObjectDisposedException発生
+（コンテキストメニューからDL中止をすると、設定時間でタイムアウトする）
+→修正（状態を保存して強制終了）2011/08/04
+
+スレタイに無効な文字が含まれるとNullReferenseException発生
+フォルダーは正常に作成される（エスケープされている）
+ErrorLog参照（03/23 23:50)
+→修正2011/03/26
+
+・2011/03/23
+
+不具合
+sourceResIndex が強制終了によってずれてArgumentOutofRangeException　発生
+→修正（Thread_Downloadingイベントで発生していた）2011/06/12
+
+・2011/04/18
+
+CurrentSettings.Boards プロパティに初めてアクセスするとOnlineUpdateメソッドが実行される
+→巡回設定の板ツリーを展開すると数秒固まる
+→修正2011/06/12
+
+・2011/09/03
+画像のダウンロードをすべてのスレッド同時に行うように変更
+→再ダウンロードが多くなる（画像データだけ取得してダウンロード済み？なので破棄）
+→無駄な通信が多い
+→修正なし（変わらない？）
+
+・2011/09/12
+ApplicationSettings で　アクセス違反（別プロセスで使用されている）Save()
+→デッドロック？
+→lockされている時間をなるべく短く（粒度を低く抑える）
+参考 C#lockキーワード：http://msdn.microsoft.com/ja-jp/library/c5kehkcz(v=VS.100).aspx
+dat読み込み中で止まった→再起動でなおった
+
+前バージョンのハッシュ等をデシリアライズする
+→アセンブリが一致せずに例外発生
+→別のアプリケーションを作成（オリジナルのアセンブリをDLLとして参照）
+
+DownloadedImageHashesがnullの場合がある
+→初期化のタイミングをダウンローダー起動時イベントにまとめた
+
+System.IO.IOException: 別のプロセスで使用されているため、プロセスはファイル '%DeanCC%\ImageHashes' にアクセスできません。
+→ImageHashesをシリアル化するタイミングをアプリケーション終了時のみにした
+
+NGFiles.txtに記載されている画像をダウンロードしたときステータスがNGにならない（HTML作成時の動作にも影響）
+→修正
+
+・2011/10/23
+
+巡回設定　板URL→板名（複数）　に変更
+→完了
+コマンド　パラメータ(ThreadCollectionをパラメータとして渡すExecute(Threads))
+→完了（Thread単体をパラメータにした）
+
+巡回対象を全板（AllBoardsとかを実装して，負荷軽減のためデータ取得を一気にやらずに分散する）
+
+command execute() process.start()が引数を別に指定する必要あり（"program files" "引数1 引数2"　→start("program files","引数1 引数2")　）
+→完了
+
+
+板移転時の対応（PatrolPatternのBoardを更新する）
+→完了（2chからは取得しないで，板一覧取得先から移転先を取得）
+
+pita,imepic等のurlが認識されない
+→拡張子がないから画像urlとして追加されない
+→imageViewにマッチするor特別に許可するなどして追加するが，画像は取得できない
+→imageViewの3引数に$EXTRACT1が指定されていて，4，5引数の正規表現であらたに画像urlを取得する必要あり
+（いまの仕様では，重くなるのを回避するために3引数以下は無視して，直リンが許可されているアップローダからのみ取得してる）
+どちらにしろ，取得に時間がかかる
+
+BoardInfoのServerがアプリケーション内で複数のインスタンスとして保持されている
+→Serverが変更されたときにすべてのインスタンスを変えなければならなくなる
+→一つのServer（常に最新が保障される）をほかのBoardInfoが参照する形に変更する必要あり（次期バージョン）
