@@ -221,3 +221,5 @@ D:\DeanCCProject\DeanCC\obj\x86\Debug\DeanCC.exe
 D:\DeanCCProject\DeanCC\obj\x86\Debug\DeanCC.pdb
 F:\DeanCCProject\DeanCC\obj\x86\Debug\DeanCC.exe
 F:\DeanCCProject\DeanCC\obj\x86\Debug\DeanCC.pdb
+F:\DeanCC Git\DeanCC5\DeanCC\obj\x86\Debug\DeanCC.exe
+F:\DeanCC Git\DeanCC5\DeanCC\obj\x86\Debug\DeanCC.pdb
