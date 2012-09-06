@@ -55,6 +55,10 @@ namespace DeanCCCore.Core
         /// </summary>
         InvalidUriFormat,
         /// <summary>
+        /// $EXTRACTオプションでの画像URLの取得に失敗しました
+        /// </summary>
+        FailedReplaceExtractUrl,
+        /// <summary>
         /// 最大試行回数を超えています
         /// </summary>
         OverTriedCount,

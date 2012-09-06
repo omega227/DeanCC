@@ -20,7 +20,8 @@ namespace DeanCCCore.Core
         string MD5Hash { get; }
         ImageState State { get; set; }
         ImageDownloadResult Download();
-        void Save(byte[] data, string saveFolder);
+        void Save(byte[] data, string saveFolder, string fileNameFormat);
+        string Format(string text);
         void ResetState();
         string SavedPath { get; }
     }

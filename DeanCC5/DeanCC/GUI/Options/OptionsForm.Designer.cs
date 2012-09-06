@@ -161,6 +161,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "オプション";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OptionsForm_FormClosing);
+            this.Shown += new System.EventHandler(this.OptionsForm_Shown);
             this.ResumeLayout(false);
 
         }

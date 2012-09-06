@@ -52,6 +52,10 @@ namespace DeanCCCore.Core._2ch
         {
             //デシリアライズされた直後はプログレスを100%に設定
             totalDownloadedImageCount = totalDownloadingImageCount = 1;
+            //if (maybeImageHeaders == null)
+            //{
+            //    maybeImageHeaders = new ImageHeaderCollection();
+            //}
         }
 
         public Thread()
@@ -149,6 +153,13 @@ namespace DeanCCCore.Core._2ch
             get { return imageHeaders; }
         }
 
+        //private ImageHeaderCollection maybeImageHeaders = new ImageHeaderCollection();
+        //[Browsable(false)]
+        //public ImageHeaderCollection MaybeImageHeaders
+        //{
+        //    get { return maybeImageHeaders; }
+        //}
+
         private DateTime lastImageModified;
 
         /// <summary>
@@ -171,6 +182,20 @@ namespace DeanCCCore.Core._2ch
 
         private static readonly object syncSaving = new object();
 
+        private IEnumerable<IImageHeader> GetDownloadImages()
+        {
+            //if (Common.Options.BrowsersOptions.JaneOptions.EnableImageViewURLReplacedatOption)
+            //{
+            //    List<IImageHeader> allImageHeader = imageHeaders.ToList();
+            //    allImageHeader.AddRange(maybeImageHeaders);
+            //    return allImageHeader.Where(image => !image.DownloadCompleted && image.Downloadable);
+            //}
+            //else
+            //{
+                return imageHeaders.Where(image => !image.DownloadCompleted && image.Downloadable);
+            //}
+        }
+
         /// <summary>
         /// メインプロセスを開始します
         /// </summary>
@@ -187,7 +212,7 @@ namespace DeanCCCore.Core._2ch
                 return;
             }
 
-            IEnumerable<IImageHeader> downloadImages = imageHeaders.Where(image => !image.DownloadCompleted && image.Downloadable);
+            IEnumerable<IImageHeader> downloadImages = GetDownloadImages();
             totalDownloadingImageCount = downloadImages.Count();
             try
             {
@@ -373,8 +398,9 @@ namespace DeanCCCore.Core._2ch
             {
                 string saveFolder = destination.IsZip && !Common.Options.ZipOptions.SavesSameImagesFolder ?
                     Common.Options.ZipOptions.DefaultSaveFolder : header.ImageSaveFolder;
-
-                destination.Save(result.Data, saveFolder);
+                string fileNameFormat = Common.Options.ImageSaveOptions.FileNameFormat;
+                fileNameFormat = header.Format(fileNameFormat);
+                destination.Save(result.Data, saveFolder, fileNameFormat);
             }
             if (Common.Options.BrowsersOptions.JaneOptions.SavableCache && Common.ViewCacher != null)
             {
@@ -496,13 +522,27 @@ namespace DeanCCCore.Core._2ch
             {
                 string replacedNewReses = Common.ReplaceStr != null ? Common.ReplaceStr.Replace(newReses) : newReses;
                 int startResIndex = header.GotResCount - header.NewResCount;
-                foreach (ImageHeader newImage in
-                    ThreadUtility.ParseHeader(startResIndex, replacedNewReses, header.Parent.ExtensionFormat))
+                ThreadUtility.ParseHeaderResult result = ThreadUtility.ParseHeader(startResIndex, replacedNewReses, header.Parent.ExtensionFormat);
+                foreach (ImageHeader newImage in result.ImageHeaders)
                 {
                     if (!imageHeaders.Contains(newImage) &&
                         Common.Options.NGOptions.NGUrls.All(ngUrl => !newImage.OriginalUrl.Contains(ngUrl)))
                     {
                         imageHeaders.Add(newImage);
+                    }
+                }
+                if (Common.Options.BrowsersOptions.JaneOptions.EnableImageViewURLReplacedatOption)
+                {
+                    foreach (MaybeImageHeader newUrl in result.MaybeImageHeaders)
+                    {
+                        if (!imageHeaders.Contains(newUrl))
+                        {
+                            imageHeaders.Add(newUrl);
+                        }
+                        //if (!maybeImageHeaders.Contains(newUrl))
+                        //{
+                        //    maybeImageHeaders.Add(newUrl);
+                        //}
                     }
                 }
             }
@@ -521,7 +561,7 @@ namespace DeanCCCore.Core._2ch
             {
                 e.Cancel = true;
             }
-            if (Settings.Crashed && !header.Repaired)
+            if (Settings.Crushed && !header.Repaired)
             {
                 header.ClearStatus();
             }

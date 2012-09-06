@@ -235,6 +235,12 @@
     <Compile Include="GUI\Options\ZipOptionsControl.Designer.cs">
       <DependentUpon>ZipOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\OptionWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\OptionWizard.Designer.cs">
+      <DependentUpon>OptionWizard.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\PatrolPatternEditControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -371,6 +377,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Options\ZipOptionsControl.resx">
       <DependentUpon>ZipOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\OptionWizard.resx">
+      <DependentUpon>OptionWizard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\PatrolPatternEditControl.resx">
       <DependentUpon>PatrolPatternEditControl.cs</DependentUpon>

@@ -38,7 +38,7 @@
             // updateButton
             // 
             this.updateButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.updateButton.Location = new System.Drawing.Point(285, 266);
+            this.updateButton.Location = new System.Drawing.Point(285, 239);
             this.updateButton.Name = "updateButton";
             this.updateButton.Size = new System.Drawing.Size(101, 23);
             this.updateButton.TabIndex = 0;
@@ -48,7 +48,7 @@
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(392, 266);
+            this.cancelButton.Location = new System.Drawing.Point(392, 239);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
@@ -69,25 +69,27 @@
             this.releaseTextBox.Location = new System.Drawing.Point(12, 70);
             this.releaseTextBox.Multiline = true;
             this.releaseTextBox.Name = "releaseTextBox";
-            this.releaseTextBox.Size = new System.Drawing.Size(455, 169);
+            this.releaseTextBox.ReadOnly = true;
+            this.releaseTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.releaseTextBox.Size = new System.Drawing.Size(455, 137);
             this.releaseTextBox.TabIndex = 4;
             // 
             // separatorLable1
             // 
             this.separatorLable1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.separatorLable1.Location = new System.Drawing.Point(12, 253);
+            this.separatorLable1.Location = new System.Drawing.Point(12, 226);
             this.separatorLable1.Name = "separatorLable1";
             this.separatorLable1.Size = new System.Drawing.Size(455, 2);
             this.separatorLable1.TabIndex = 2;
             this.separatorLable1.Text = "separatorLable1";
             // 
-            // UpdateForm
+            // NewVersionForm
             // 
             this.AcceptButton = this.updateButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(479, 292);
+            this.ClientSize = new System.Drawing.Size(479, 272);
             this.Controls.Add(this.releaseTextBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.separatorLable1);
@@ -95,7 +97,7 @@
             this.Controls.Add(this.updateButton);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "UpdateForm";
+            this.Name = "NewVersionForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;

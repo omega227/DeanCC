@@ -19,6 +19,7 @@ namespace DeanCC.GUI.Options
             destination.BrowsersOptions.JaneOptions.ImageSaveMode = imageAndCacheRadioButton.Checked ? ImageSaveMode.BothImageandCache :
                 cacheRadioButton.Checked ? ImageSaveMode.OnlyCache :
                 ImageSaveMode.OnlyImage;
+            destination.BrowsersOptions.JaneOptions.EnableImageViewURLReplacedatOption = enableImageViewOptionCheckBox.Checked;
         }
 
         public void Set(DeanCCCore.Core.Options.OptionItems source)
@@ -41,6 +42,7 @@ namespace DeanCC.GUI.Options
                     imageAndCacheRadioButton.Checked = true;
                     break;
             }
+            enableImageViewOptionCheckBox.Checked = source.BrowsersOptions.JaneOptions.EnableImageViewURLReplacedatOption;
             loaded = true;
         }
 

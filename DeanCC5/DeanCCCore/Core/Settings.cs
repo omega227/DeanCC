@@ -29,7 +29,7 @@ namespace DeanCCCore.Core
         public static readonly string BackUpSavePath = SavePath + BackUpSuffix;
 
         public const string BackUpSuffix = ".backup";
-        private static readonly string CrashMarkerPath = Path.Combine(SaveFolder, "Crash");
+        private static readonly string CrushMarkerPath = Path.Combine(SaveFolder, "Crush");
         public static object SyncRoot = new object();
 
         public Settings()
@@ -101,11 +101,11 @@ namespace DeanCCCore.Core
         /// <summary>
         /// 正常に保存されていないかどうかを示す値
         /// </summary>
-        public static bool Crashed
+        public static bool Crushed
         {
             get
             {
-                return File.Exists(CrashMarkerPath);
+                return File.Exists(CrushMarkerPath);
             }
         }
 
@@ -156,12 +156,12 @@ namespace DeanCCCore.Core
         }
 
         /// <summary>
-        /// アプリケーション終了時にSaveメソッドの実行が完了していない場合にCrashedがTrueを示すようにします
+        /// アプリケーション終了時にSaveメソッドの実行が完了していない場合にCrushedがTrueを示すようにします
         /// </summary>
-        public void MarkCrash()
+        public void MarkCrush()
         {
             //空ファイルを作成
-            using (FileStream fs = new FileStream(CrashMarkerPath, FileMode.Create))
+            using (FileStream fs = new FileStream(CrushMarkerPath, FileMode.Create))
             {
             }
         }
@@ -207,7 +207,7 @@ namespace DeanCCCore.Core
 
         private void OnSaved()
         {
-            File.Delete(CrashMarkerPath);
+            File.Delete(CrushMarkerPath);
         }
         /// <summary>
         /// 現在のインスタンスをバックアップとして保存します

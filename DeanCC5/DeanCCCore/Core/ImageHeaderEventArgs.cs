@@ -18,6 +18,7 @@ namespace DeanCCCore.Core
         public System.Net.HttpWebResponse ResponseHeader { get; set; }
         public string Url { get; set; }
         public bool Locked { get; set; }
+        public bool TriedDownload { get; set; }
         private string host;
         public string Host
         {

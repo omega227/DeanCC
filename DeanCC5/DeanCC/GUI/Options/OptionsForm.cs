@@ -92,5 +92,15 @@ namespace DeanCC.GUI.Options
                 }
             }
         }
+
+        private void OptionsForm_Shown(object sender, EventArgs e)
+        {
+            if (Common.CurrentSettings.FirstRunning && !Common.ShowsFirstOptionDescription)
+            {
+                MessageBox.Show("設定を変更できます。特に必要ないならそのままOKを押してください。\nJaneStyleを使用している場合は詳細>ブラウザー を設定するとJaneStyleで取得可能な画像URLがそのまま利用できます。(ImageViewURLReplace.dat等)"
+                    , "初回起動", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Common.ShowsFirstOptionDescription = true;
+            }
+        }
     }
 }

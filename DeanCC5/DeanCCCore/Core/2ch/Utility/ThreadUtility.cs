@@ -13,6 +13,17 @@ namespace DeanCCCore.Core._2ch.Utility
         private static readonly Regex ThreadUrlPattern =
             new Regex(@"^h?ttp://(?<host>.+)/(?<path>[^/]+)/(index\d*\.html|\s*$)", RegexOptions.Compiled);
         private static readonly string[] IgnoreExtensionHosts = { "www1.axfc.net", "www.dotup.org" };
+        private static readonly Regex MaybeImageUrlPattern =
+            new Regex(@"h?ttp://([-_.!~*'a-zA-Z0-9;?:@&=+$,%#]+/[-_.!~*'a-zA-Z0-9;/?:@&=+$,%#]+)", RegexOptions.Compiled);
+
+        public sealed class ParseHeaderResult
+        {
+            public ParseHeaderResult()
+            {
+            }
+            public IEnumerable<ImageHeader> ImageHeaders { get; set; }
+            public IEnumerable<MaybeImageHeader> MaybeImageHeaders { get; set; }
+        }
 
         public static BoardInfo ParseBoardInfo(string url, string name)
         {
@@ -25,27 +36,47 @@ namespace DeanCCCore.Core._2ch.Utility
             return null;
         }
 
-        public static IEnumerable<ImageHeader> ParseHeader(int startResIndex, string text, string extensionFormat)
+        public static ParseHeaderResult ParseHeader(int startResIndex, string text, string extensionFormat)
         {
-            List<ImageHeader> headers = new List<ImageHeader>();
+            List<ImageHeader> imageUrls = new List<ImageHeader>();
+            List<MaybeImageHeader> urls = new List<MaybeImageHeader>();
             string[] lines = text.Split('\n');
             for (int i = 0; i < lines.Length; i++)
             {
-                foreach (string url in GetImageUrls(lines[i], extensionFormat))
-                {
-                    Uri uri;
-                    if (Uri.TryCreate(url, UriKind.Absolute, out uri))
+                ForEachUrls(lines[i], extensionFormat,
+                    imageUrl =>
                     {
-                        headers.Add(CreateHeader(i + startResIndex, uri));
-                    }
-                }
+                        Uri uri;
+                        if (Uri.TryCreate(imageUrl, UriKind.Absolute, out uri))
+                        {
+                            imageUrls.Add(CreateHeader(i + startResIndex, uri));
+                        }
+                    }, url =>
+                        {
+                            if (Common.Options.BrowsersOptions.JaneOptions.EnableImageViewURLReplacedatOption)
+                            {
+                                Uri uri;
+                                if (Uri.TryCreate(url, UriKind.Absolute, out uri))
+                                {
+                                    if (MaybeImageUrlPattern.IsMatch(uri.OriginalString))
+                                    {
+                                        urls.Add(new MaybeImageHeader(i + startResIndex, uri.OriginalString));
+                                    }
+                                }
+                            }
+                        });
             }
-            return headers;
+
+            ParseHeaderResult result = new ParseHeaderResult()
+            {
+                ImageHeaders = imageUrls,
+                MaybeImageHeaders = urls
+            };
+            return result;
         }
 
-        public static IEnumerable<string> GetImageUrls(string text, string extensionFormat)
+        public static void ForEachUrls(string text, string extensionFormat, Action<string> imageUrlCallback, Action<string> urlCallback)
         {
-            List<string> urls = new List<string>();
             Regex extensionRegex = new Regex(extensionFormat, RegexOptions.IgnoreCase);
             MatchCollection matches = UrlPattern.Matches(text);
             foreach (Match urlMatch in matches)
@@ -53,10 +84,13 @@ namespace DeanCCCore.Core._2ch.Utility
                 string url = Uri.UriSchemeHttp + "://" + urlMatch.Groups[1].Value;
                 if (IsImageUrl(url, extensionRegex))
                 {
-                    urls.Add(url);
+                    imageUrlCallback(url);
+                }
+                else
+                {
+                    urlCallback(url);
                 }
             }
-            return urls;
         }
 
         private static ImageHeader CreateHeader(int sourceResIndex, Uri uri)

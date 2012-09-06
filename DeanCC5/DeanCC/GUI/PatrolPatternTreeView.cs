@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using DeanCCCore.Core;
 using DeanCCCore.Core._2ch;
+using DeanCCCore.Core.Utility;
 
 namespace DeanCC.GUI
 {
@@ -21,11 +22,23 @@ namespace DeanCC.GUI
         public const int FolderLevel = 0;
         private ImageList patrolPatternImageList;
         private System.ComponentModel.IContainer components;
+        private ContextMenuStrip contextMenuStrip;
+        private ToolStripMenuItem openFilderToolStripMenuItem;
         public const int PatternLevel = 1;
 
         public PatrolPatternTreeView()
         {
             InitializeComponent();
+            openFilderToolStripMenuItem.Click += new EventHandler(openFolderToolStripMenuItem_Click);
+        }
+
+        void openFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedNode != null && SelectedNode.Level == FolderLevel)
+            {
+                GenreFolder folder = (GenreFolder)SelectedNode.Tag;
+                ProcessUtility.OpenFolder(folder.LocalPath);
+            }
         }
 
         /// <summary>
@@ -300,6 +313,9 @@ namespace DeanCC.GUI
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PatrolPatternTreeView));
             this.patrolPatternImageList = new System.Windows.Forms.ImageList(this.components);
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openFilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // patrolPatternImageList
@@ -309,13 +325,41 @@ namespace DeanCC.GUI
             this.patrolPatternImageList.Images.SetKeyName(0, "folder.png");
             this.patrolPatternImageList.Images.SetKeyName(1, "images.png");
             // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openFilderToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(101, 26);
+            this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
+            // 
+            // openFilderToolStripMenuItem
+            // 
+            this.openFilderToolStripMenuItem.Name = "openFilderToolStripMenuItem";
+            this.openFilderToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.openFilderToolStripMenuItem.Text = "開く";
+            // 
             // PatrolPatternTreeView
             // 
+            this.ContextMenuStrip = this.contextMenuStrip;
             this.ImageIndex = 0;
             this.ImageList = this.patrolPatternImageList;
+            this.LineColor = System.Drawing.Color.Black;
             this.SelectedImageIndex = 0;
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
+        }
+
+        private void contextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (SelectedNode == null)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            openFilderToolStripMenuItem.Enabled = (SelectedNode.Level == FolderLevel);
         }
     }
 

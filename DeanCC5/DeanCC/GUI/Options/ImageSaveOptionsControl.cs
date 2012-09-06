@@ -25,6 +25,7 @@ namespace DeanCC.GUI.Options
             destination.ImageSaveOptions.RetryImageLifeDate = (int)retryDateNumericUpDown.Value;
             destination.ImageSaveOptions.MovesSaveFolder = movePathCheckBox.Checked;
             destination.ImageSaveOptions.MovedDestinationFolder = moveFolderBrowserControl.SelectedPath;
+            destination.ImageSaveOptions.FileNameFormat = fileNameControl.Text;
         }
 
         public void Set(DeanCCCore.Core.Options.OptionItems source)
@@ -35,6 +36,7 @@ namespace DeanCC.GUI.Options
             retryDateNumericUpDown.Value = source.ImageSaveOptions.RetryImageLifeDate;
             movePathCheckBox.Checked = source.ImageSaveOptions.MovesSaveFolder;
             moveFolderBrowserControl.SelectedPath = source.ImageSaveOptions.MovedDestinationFolder;
+            fileNameControl.Text = source.ImageSaveOptions.FileNameFormat;
             loaded = true;
         }
 

@@ -129,6 +129,12 @@ namespace DeanCCCore.Core.Options
                         ImageSaveMode == Options.ImageSaveMode.BothImageandCache;
                 }
             }
+
+            /// <summary>
+            /// ImageViewUrlReplace.datのオプション($EXTRACT等)を有効にするかどうかを示す値
+            /// </summary>
+            public bool EnableImageViewURLReplacedatOption { get; set; }
+
             /// <summary>
             /// JaneStyleのImageViewURLReplace.datのパス
             /// </summary>

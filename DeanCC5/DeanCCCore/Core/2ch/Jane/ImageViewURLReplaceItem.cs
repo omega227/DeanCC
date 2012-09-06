@@ -8,6 +8,12 @@ namespace DeanCCCore.Core._2ch.Jane
 {
     public sealed class ImageViewURLReplaceItem
     {
+        public static ImageViewURLReplaceItem Empty = new ImageViewURLReplaceItem();
+
+        public ImageViewURLReplaceItem()
+        {
+        }
+
         public ImageViewURLReplaceItem(string url)
         {
             ReplacedUrl = url;

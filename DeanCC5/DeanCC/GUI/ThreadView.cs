@@ -519,6 +519,11 @@ namespace DeanCC.GUI
                             image.SourceThreadTitle = thread.Title;
                             images.Add(image);
                         }
+                        //foreach (ImageHeader maybeImage in thread.MaybeImageHeaders)
+                        //{
+                        //    maybeImage.SourceThreadTitle = thread.Title;
+                        //    images.Add(maybeImage);
+                        //}
                     }
                 });
             if (images.Count > 0)

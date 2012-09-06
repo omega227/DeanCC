@@ -428,9 +428,17 @@ namespace DeanCCCore.Core._2ch
             {
                 if (string.IsNullOrEmpty(imageSaveFolder))
                 {
-                    imageSaveFolder = Parent.CreatesSubFolder ?
-                        Path.Combine(Parent.ParentFolder.LocalPath, FileNameFormat.EscapeFileName(Format(Parent.SubFolderFormat))) :
-                        Parent.ParentFolder.LocalPath;
+                    if (Parent.CreatesSubFolder)
+                    {
+                        string formatedSubFolder = Format(Parent.SubFolderFormat);
+                        imageSaveFolder = string.IsNullOrEmpty(formatedSubFolder) ?
+                            Parent.ParentFolder.LocalPath :
+                            Path.Combine(Parent.ParentFolder.LocalPath, FileNameFormat.EscapeFileName(formatedSubFolder));
+                    }
+                    else
+                    {
+                        imageSaveFolder = Parent.ParentFolder.LocalPath;
+                    }
                 }
                 return imageSaveFolder;
             }

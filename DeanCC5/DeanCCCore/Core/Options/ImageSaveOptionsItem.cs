@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DeanCCCore.Core._2ch;
+using System.Runtime.Serialization;
 
 namespace DeanCCCore.Core.Options
 {
@@ -11,6 +12,7 @@ namespace DeanCCCore.Core.Options
     {
         public ImageSaveOptionsItem()
         {
+            FileNameFormat = "%file%";
             MovesSaveFolder = false;
             BlockDownloadedImage = true;
             Threshold = 0;
@@ -19,10 +21,19 @@ namespace DeanCCCore.Core.Options
             ApplyOriginalTimestamp = false;
         }
 
-        ///// <summary>
-        ///// 画像ファイル名フォーマット
-        ///// </summary>
-        //public string FileNameFormat { get; set; }
+        [OnDeserialized]
+        void OnDeserialized(StreamingContext sc)
+        {
+            if (string.IsNullOrEmpty(FileNameFormat))
+            {
+                FileNameFormat = "%file%";
+            }
+        }
+
+        /// <summary>
+        /// 画像ファイル名フォーマット
+        /// </summary>
+        public string FileNameFormat { get; set; }
         /// <summary>
         /// ダウンロード済み画像を保存しない
         /// </summary>

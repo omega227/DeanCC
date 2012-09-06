@@ -11,12 +11,41 @@ namespace DeanCC.GUI.Options
 {
     public partial class ThreadHeaderFormatControl : UserControl
     {
+        public enum FormatType
+        {
+            None,
+            ThreadHeader,
+            ImageHeader
+        }
+
         public ThreadHeaderFormatControl()
+            :this(FormatType.ThreadHeader)
+        {
+        }
+
+        public ThreadHeaderFormatControl(FormatType formatType)
         {
             InitializeComponent();
-            for (int i = 1; i < DeanCCCore.Core._2ch.ThreadHeader.FormatNamePairs.Length; i += 2)
+            switch (formatType)
             {
-                formatComboBox.Items.Add(DeanCCCore.Core._2ch.ThreadHeader.FormatNamePairs[i]);
+                case FormatType.ImageHeader:
+                    for (int i = 1; i < DeanCCCore.Core._2ch.ThreadHeader.FormatNamePairs.Length; i += 2)
+                    {
+                        formatComboBox.Items.Add(DeanCCCore.Core._2ch.ThreadHeader.FormatNamePairs[i]);
+                    }
+                    for (int i = 1; i < DeanCCCore.Core.ImageHeader.FormatNamePairs.Length; i += 2)
+                    {
+                        formatComboBox.Items.Add(DeanCCCore.Core.ImageHeader.FormatNamePairs[i]);
+                    }
+                    break;
+
+                default:
+                case FormatType.ThreadHeader:
+                    for (int i = 1; i < DeanCCCore.Core._2ch.ThreadHeader.FormatNamePairs.Length; i += 2)
+                    {
+                        formatComboBox.Items.Add(DeanCCCore.Core._2ch.ThreadHeader.FormatNamePairs[i]);
+                    }
+                    break;
             }
             formatComboBox.SelectedIndex = 0;
         }
@@ -25,7 +54,15 @@ namespace DeanCC.GUI.Options
         {
             if (formatComboBox.SelectedIndex > 0)
             {
-                textBox.AppendText(DeanCCCore.Core._2ch.ThreadHeader.FormatNamePairs[2 * (formatComboBox.SelectedIndex - 1)]);
+                if (2*formatComboBox.SelectedIndex <= DeanCCCore.Core._2ch.ThreadHeader.FormatNamePairs.Length)
+                {
+                    textBox.AppendText(DeanCCCore.Core._2ch.ThreadHeader.FormatNamePairs[2 * (formatComboBox.SelectedIndex - 1)]);
+                }
+                else
+                {
+                    int index = 2 * (formatComboBox.SelectedIndex-1) - DeanCCCore.Core._2ch.ThreadHeader.FormatNamePairs.Length;
+                    textBox.AppendText(DeanCCCore.Core.ImageHeader.FormatNamePairs[index]);
+                }
             }
         }
 

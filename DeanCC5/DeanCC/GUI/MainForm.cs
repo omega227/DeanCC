@@ -321,6 +321,7 @@ namespace DeanCC.GUI
             isStartup = true;
             if (Common.CurrentSettings.FirstRunning)
             {
+                optionToolStripMenuItem.PerformClick();
                 editPatrolToolStripMenuItem.PerformClick();
             }
             base.OnShown(e);
@@ -573,7 +574,7 @@ namespace DeanCC.GUI
             if (newVersionDownloaded)
             {
                 DeanCCCore.Core.VersionUp.VersionUpClient.RunUpdater();
-                existToolStripMenuItem.PerformClick();
+                Application.Exit();
             }
         }
 

@@ -51,7 +51,9 @@ namespace DeanCCCore.Core
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
 
-            req.UserAgent = userAgent;
+            req.UserAgent = userAgent; //配布する場合はこちらを有効にする(↓はコメントアウト)
+            //req.UserAgent = url.StartsWith("http://beebee2see.appspot.com/") ?
+            //    req.UserAgent = "BB2C/1.3.3 CFNetwork/342.1 Darwin/9.4.1" : userAgent;
 
             if (isgzip)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using DeanCCCore.Core;
 using System.Text.RegularExpressions;
 
 namespace DeanCCCore.Core._2ch.Jane
@@ -17,7 +18,8 @@ namespace DeanCCCore.Core._2ch.Jane
     public sealed class ImageViewURLReplace : IImageViewURLReplace
     {
         private static readonly Regex CommentPattern = new Regex(@"^(;|'|//)");
-        private const string InvalidReferer = "$EXTRACT";
+        private static readonly Regex OptionRefererPattern = new Regex(@"([^=]+)(.+)?");
+        //private const string InvalidReferer = "$EXTRACT";
 
         public ImageViewURLReplace()
         {
@@ -31,27 +33,22 @@ namespace DeanCCCore.Core._2ch.Jane
 
         public ImageViewURLReplaceItem Replace(string url)
         {
-            ImageViewURLReplaceItem result = new ImageViewURLReplaceItem(url);
             foreach (ImageViewUrlItem item in items)
             {
-                if (item.Regex.IsMatch(url))
+                if (item.Pattern.IsMatch(url))
                 {
-                    result.Referer = item.Regex.Replace(url, item.Referer);
-                    result.ReplacedUrl = item.Regex.Replace(url, item.Replacement);
-                    //cookieには未対応
-
-                    break;//どれかにマッチしたら置換を終了
+                    return item.Replace(url);//どれかにマッチしたら置換を終了
                 }
             }
 
-            return result;
+            return new ImageViewURLReplaceItem(url);
         }
 
         public bool IsMatch(string url)
         {
             foreach (ImageViewUrlItem item in items)
             {
-                if (item.Regex.IsMatch(url))
+                if (item.Pattern.IsMatch(url))
                 {
                     return true;
                 }
@@ -72,19 +69,6 @@ namespace DeanCCCore.Core._2ch.Jane
         }
 
         private List<ImageViewUrlItem> items = new List<ImageViewUrlItem>();
-
-        /// <summary>
-        /// ImageViewURLReplace.dat を .NET の Regex用正規表現に直す
-        /// </summary>
-        /// <param name="pattern"></param>
-        /// <returns></returns>
-        private string CorrectRegex(string pattern)
-        {
-            pattern = Regex.Replace(pattern, @"$\d", @"$\{${1}}");
-            pattern = Regex.Replace(pattern, "$&", @"$\{0}");
-
-            return pattern;
-        }
 
         public void Load()
         {
@@ -121,15 +105,33 @@ namespace DeanCCCore.Core._2ch.Jane
                     string[] elements = line.Split('\t');
                     if (elements.Length >= 2)
                     {
-                        string key = CorrectRegex(elements[0]);
-                        string repl = CorrectRegex(elements[1]);
-                        string refe = elements.Length >= 3 ? CorrectRegex(elements[2]) : string.Empty;
+                        string key = elements[0];
+                        string repl = elements[1];
+                        string refe = elements.Length >= 3 ? elements[2] : string.Empty;
                         try
                         {
-                            if (!refe.Contains(InvalidReferer))
+                            string option = elements.Length >= 4 ? elements[3] : string.Empty;
+                            Match optionMatch = OptionRefererPattern.Match(option);
+                            string mode = optionMatch.Groups[1].Value;
+                            ImageViewUrlItem item = null;
+                            if (mode == "$EXTRACT" &&
+                                Common.Options.BrowsersOptions.JaneOptions.EnableImageViewURLReplacedatOption)
                             {
-                                list.Add(new ImageViewUrlItem(key, repl, refe));
+                                string extractPattern = elements[4];
+                                string optionRefefer = optionMatch.Groups[2].Value;
+                                item = new ImageViewUrlExtractItem(key, repl, refe, optionRefefer, extractPattern);
                             }
+                            else if (mode == "$COOKIE" &&
+                                Common.Options.BrowsersOptions.JaneOptions.EnableImageViewURLReplacedatOption)
+                            {
+                                string optionRefefer = optionMatch.Groups[2].Value;
+                                item = new ImageViewUrlCookieItem(key, repl, refe, optionRefefer);
+                            }
+                            else
+                            {
+                                item = new ImageViewUrlItem(key, repl, refe);
+                            }
+                            list.Add(item);
                         }
                         catch (ArgumentException)
                         {
@@ -156,59 +158,6 @@ namespace DeanCCCore.Core._2ch.Jane
         {
             loaded = false;
             Load(path);
-        }
-    }
-
-    public sealed class ImageViewUrlItem
-    {
-        private Regex regex;
-        /// <summary>
-        /// このインスタンスが表す正規表現
-        /// </summary>
-        public Regex Regex
-        {
-            get
-            {
-                return regex;
-            }
-        }
-
-        private string replacement;
-        /// <summary>
-        /// 置換文字
-        /// </summary>
-        public string Replacement
-        {
-            get
-            {
-                return replacement;
-            }
-        }
-
-        private string referer;
-        /// <summary>
-        /// リファラ
-        /// </summary>
-        public string Referer
-        {
-            get
-            {
-                return referer;
-            }
-        }
-
-        public ImageViewUrlItem(string key, string replacement, string referer)
-        {
-            this.regex = new Regex(key, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            this.replacement = replacement;
-            this.referer = referer;
-            RegexTest();
-        }
-
-        private void RegexTest()
-        {
-            regex.Replace("", replacement);
-            regex.Replace("", referer);
         }
     }
 }

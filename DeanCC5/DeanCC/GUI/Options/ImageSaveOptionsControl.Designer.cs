@@ -36,10 +36,12 @@
             this.movePathCheckBox = new System.Windows.Forms.CheckBox();
             this.retryCountNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.retryDateNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.moveFolderBrowserControl = new DeanCC.GUI.Options.FolderBrowserControl();
+            this.originalTimestampCheckBox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.originalTimestampCheckBox = new System.Windows.Forms.CheckBox();
+            this.moveFolderBrowserControl = new DeanCC.GUI.Options.FolderBrowserControl();
+            this.fileNameControl = new DeanCC.GUI.Options.ThreadHeaderFormatControl(DeanCC.GUI.Options.ThreadHeaderFormatControl.FormatType.ImageHeader);
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.thresholdNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.retryCountNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.retryDateNumericUpDown)).BeginInit();
@@ -60,7 +62,7 @@
             // thresholdNumericUpDown
             // 
             this.thresholdNumericUpDown.AccessibleDescription = "";
-            this.thresholdNumericUpDown.Location = new System.Drawing.Point(14, 60);
+            this.thresholdNumericUpDown.Location = new System.Drawing.Point(14, 118);
             this.thresholdNumericUpDown.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -74,7 +76,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 45);
+            this.label1.Location = new System.Drawing.Point(3, 103);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 12);
             this.label1.TabIndex = 2;
@@ -99,7 +101,7 @@
             // 
             // retryCountNumericUpDown
             // 
-            this.retryCountNumericUpDown.Location = new System.Drawing.Point(14, 113);
+            this.retryCountNumericUpDown.Location = new System.Drawing.Point(145, 118);
             this.retryCountNumericUpDown.Maximum = new decimal(new int[] {
             30,
             0,
@@ -122,7 +124,7 @@
             // 
             // retryDateNumericUpDown
             // 
-            this.retryDateNumericUpDown.Location = new System.Drawing.Point(14, 168);
+            this.retryDateNumericUpDown.Location = new System.Drawing.Point(296, 118);
             this.retryDateNumericUpDown.Maximum = new decimal(new int[] {
             30,
             0,
@@ -143,6 +145,35 @@
             0,
             0});
             // 
+            // originalTimestampCheckBox
+            // 
+            this.originalTimestampCheckBox.AutoSize = true;
+            this.originalTimestampCheckBox.Location = new System.Drawing.Point(3, 55);
+            this.originalTimestampCheckBox.Name = "originalTimestampCheckBox";
+            this.originalTimestampCheckBox.Size = new System.Drawing.Size(170, 16);
+            this.originalTimestampCheckBox.TabIndex = 9;
+            this.originalTimestampCheckBox.Text = "元画像の更新日時を適用する";
+            this.toolTip.SetToolTip(this.originalTimestampCheckBox, "ダウンロードした画像の更新日時プロパティを通常のダウンロード日時ではなく、\r\n元ファイルの更新日時に設定します。");
+            this.originalTimestampCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(134, 103);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(108, 12);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "有効ダウンロード回数";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(285, 103);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(108, 12);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "有効ダウンロード日数";
+            // 
             // moveFolderBrowserControl
             // 
             this.moveFolderBrowserControl.Description = "移動先の保存フォルダーを指定してください";
@@ -153,39 +184,29 @@
             this.moveFolderBrowserControl.Size = new System.Drawing.Size(437, 27);
             this.moveFolderBrowserControl.TabIndex = 4;
             // 
-            // label2
+            // fileNameControl
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 98);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(108, 12);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "有効ダウンロード回数";
+            this.fileNameControl.Location = new System.Drawing.Point(14, 189);
+            this.fileNameControl.Name = "fileNameControl";
+            this.fileNameControl.Size = new System.Drawing.Size(424, 26);
+            this.fileNameControl.TabIndex = 13;
+            this.toolTip.SetToolTip(this.fileNameControl, "ダウンロードした画像の拡張子抜きのファイル名を設定します。");
             // 
-            // label3
+            // label4
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 153);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(108, 12);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "有効ダウンロード日数";
-            // 
-            // originalTimestampCheckBox
-            // 
-            this.originalTimestampCheckBox.AutoSize = true;
-            this.originalTimestampCheckBox.Location = new System.Drawing.Point(3, 208);
-            this.originalTimestampCheckBox.Name = "originalTimestampCheckBox";
-            this.originalTimestampCheckBox.Size = new System.Drawing.Size(170, 16);
-            this.originalTimestampCheckBox.TabIndex = 9;
-            this.originalTimestampCheckBox.Text = "元画像の更新日時を適用する";
-            this.toolTip.SetToolTip(this.originalTimestampCheckBox, "ダウンロードした画像の更新日時プロパティを通常のダウンロード日時ではなく、\r\n元ファイルの更新日時に設定します。");
-            this.originalTimestampCheckBox.UseVisualStyleBackColor = true;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 174);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(51, 12);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "ファイル名";
             // 
             // ImageSaveOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.fileNameControl);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.originalTimestampCheckBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.retryDateNumericUpDown);
@@ -219,5 +240,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown retryDateNumericUpDown;
         private System.Windows.Forms.CheckBox originalTimestampCheckBox;
+        private ThreadHeaderFormatControl fileNameControl;
+        private System.Windows.Forms.Label label4;
     }
 }

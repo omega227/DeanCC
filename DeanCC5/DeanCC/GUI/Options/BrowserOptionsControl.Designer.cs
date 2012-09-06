@@ -34,6 +34,7 @@
             this.WebBrowserOpenFileControl = new DeanCC.GUI.Options.OpenFileControl();
             this.DefaultWebBrowserCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.enableImageViewOptionCheckBox = new System.Windows.Forms.CheckBox();
             this.janeOpenFileControl = new DeanCC.GUI.Options.OpenFileControl();
             this.imageAndCacheRadioButton = new System.Windows.Forms.RadioButton();
             this.cacheRadioButton = new System.Windows.Forms.RadioButton();
@@ -88,6 +89,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.enableImageViewOptionCheckBox);
             this.groupBox2.Controls.Add(this.janeOpenFileControl);
             this.groupBox2.Controls.Add(this.imageAndCacheRadioButton);
             this.groupBox2.Controls.Add(this.cacheRadioButton);
@@ -95,10 +97,22 @@
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Location = new System.Drawing.Point(3, 112);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(454, 137);
+            this.groupBox2.Size = new System.Drawing.Size(454, 155);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "2chブラウザー（Jane Style）";
+            // 
+            // enableImageViewOptionCheckBox
+            // 
+            this.enableImageViewOptionCheckBox.AutoSize = true;
+            this.enableImageViewOptionCheckBox.Location = new System.Drawing.Point(8, 89);
+            this.enableImageViewOptionCheckBox.Name = "enableImageViewOptionCheckBox";
+            this.enableImageViewOptionCheckBox.Size = new System.Drawing.Size(274, 16);
+            this.enableImageViewOptionCheckBox.TabIndex = 6;
+            this.enableImageViewOptionCheckBox.Text = "ImageViewURLReplace.datのオプションを有効にする";
+            this.toolTip.SetToolTip(this.enableImageViewOptionCheckBox, "画像URLに可変文字が付加されるサイトに対応します。\r\n$EXTRACTや$COOKIE等のオプションを有効にします。\r\n有効にした後に取得したスレッドから適用さ" +
+        "れます。");
+            this.enableImageViewOptionCheckBox.UseVisualStyleBackColor = true;
             // 
             // janeOpenFileControl
             // 
@@ -110,12 +124,12 @@
             this.janeOpenFileControl.TabIndex = 5;
             this.janeOpenFileControl.Title = "JaneStyleの実行ファイル（Jane2ch.exe）を指定してください";
             this.toolTip.SetToolTip(this.janeOpenFileControl, "JaneStyleの実行ファイルを指定します。\r\n指定したJaneStyleで有効な機能である\r\n画像キャッシュの保存・ImageViewURLReplace.d" +
-                    "at・ReplaceStr.txt\r\nなどが使用可能になります。");
+        "at・ReplaceStr.txt\r\nなどが使用可能になります。");
             // 
             // imageAndCacheRadioButton
             // 
             this.imageAndCacheRadioButton.AutoSize = true;
-            this.imageAndCacheRadioButton.Location = new System.Drawing.Point(279, 102);
+            this.imageAndCacheRadioButton.Location = new System.Drawing.Point(279, 120);
             this.imageAndCacheRadioButton.Name = "imageAndCacheRadioButton";
             this.imageAndCacheRadioButton.Size = new System.Drawing.Size(155, 16);
             this.imageAndCacheRadioButton.TabIndex = 4;
@@ -127,7 +141,7 @@
             // cacheRadioButton
             // 
             this.cacheRadioButton.AutoSize = true;
-            this.cacheRadioButton.Location = new System.Drawing.Point(132, 102);
+            this.cacheRadioButton.Location = new System.Drawing.Point(132, 120);
             this.cacheRadioButton.Name = "cacheRadioButton";
             this.cacheRadioButton.Size = new System.Drawing.Size(118, 16);
             this.cacheRadioButton.TabIndex = 3;
@@ -139,7 +153,7 @@
             // imageRadioButton
             // 
             this.imageRadioButton.AutoSize = true;
-            this.imageRadioButton.Location = new System.Drawing.Point(6, 102);
+            this.imageRadioButton.Location = new System.Drawing.Point(6, 120);
             this.imageRadioButton.Name = "imageRadioButton";
             this.imageRadioButton.Size = new System.Drawing.Size(99, 16);
             this.imageRadioButton.TabIndex = 2;
@@ -192,5 +206,6 @@
         private System.Windows.Forms.Label label1;
         private OpenFileControl janeOpenFileControl;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.CheckBox enableImageViewOptionCheckBox;
     }
 }

@@ -42,7 +42,7 @@ namespace DeanCC.GUI
         {
             InitializeComponent();
             //↓のコードがあるとデザイナ実行時にエラー
-            //# if !DEBUG
+#if !DEBUG
             if (!DeanCCCore.Core.Common.CurrentSettings.Boards.UpdateCompleted)
             {
                 System.Threading.Thread updateThread = new System.Threading.Thread(delegate()
@@ -51,7 +51,7 @@ namespace DeanCC.GUI
                 });
                 updateThread.Start();
             }
-            //#endif
+#endif
         }
 
         private void OnBoardSelected(BoardTableTreeViewItemSelectedEventArgs e)

@@ -18,7 +18,7 @@ namespace DeanCCCore.Core
 
         void Common_Patrolled(object sender, EventArgs e)
         {
-            running = false;
+            running = false;            
             if (isReentry)
             {
                 isReentry = false;
@@ -42,14 +42,8 @@ namespace DeanCCCore.Core
             }
         }
 
-        /// <summary>
-        /// スレッドを取得する巡回間隔
-        /// </summary>
-        public const int PatrolMinutes = 30;
-        private const int PatrolMilliSeconds = PatrolMinutes * 60 * 1000;
-        private static readonly TimeSpan PatrolSpan = TimeSpan.FromMinutes(PatrolMinutes);
-
         private DateTime startTime;
+        TimeSpan patrolSpan;
         private Timer timer;
         private bool running;
         private bool isReentry;
@@ -68,9 +62,25 @@ namespace DeanCCCore.Core
                 return TimeSpan.Zero;
             }
             else
-            {
-                TimeSpan nextTime = PatrolSpan - (DateTime.Now - startTime);
+            {                
+                TimeSpan nextTime = patrolSpan - (DateTime.Now - startTime);
                 return nextTime > TimeSpan.Zero ? nextTime : TimeSpan.Zero;
+            }
+        }
+
+        private int GetPatrolMilliSeconds(int hour)
+        {
+            if (4 <= hour && hour < 12)
+            {
+                return 60 * 60 * 1000;
+            }
+            else if (12 <= hour && hour < 20)
+            {
+                return 30 * 60 * 1000;
+            }
+            else
+            {
+                return 15 * 60 * 1000;
             }
         }
 
@@ -78,7 +88,9 @@ namespace DeanCCCore.Core
         {
             if (timer != null)
             {
-                timer.Change(dueTime, PatrolMilliSeconds);
+                int patrolMillSeconds = GetPatrolMilliSeconds(DateTime.Now.Hour);
+                patrolSpan = TimeSpan.FromMilliseconds((double)patrolMillSeconds);
+                timer.Change(dueTime, patrolMillSeconds);
             }
         }
 

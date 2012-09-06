@@ -29,6 +29,12 @@ namespace DeanCCCore.Core
         [field: NonSerialized]
         public event EventHandler<ImageHeaderEventArgs> ResponseHeaderReseived;
 
+        public const string ResNumberFormat = "%res%";
+        public const string FileNameFormat = "%file%";
+        public static string[] FormatNamePairs = 
+        {   ResNumberFormat, "レス番号",
+            FileNameFormat, "ファイル名"};
+
         private const string DefaultFileName = "image";
         private static readonly string[] AllowContentTypeTexts = { "image", "application/zip" };
 
@@ -184,6 +190,16 @@ namespace DeanCCCore.Core
             set;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is ImageHeader && this.originalUrl.Equals(((ImageHeader)obj).OriginalUrl);
+        }
+
+        public override int GetHashCode()
+        {
+            return originalUrl.GetHashCode();
+        }
+
         public virtual ImageDownloadResult Download()
         {
             ImageDownloadResult result = null;
@@ -224,6 +240,7 @@ namespace DeanCCCore.Core
                 using (HttpWebResponse response = InternetClient.GetResponse(e.Url, referer, cookie))
                 {
                     e.ResponseHeader = response;
+                    e.TriedDownload = true;
                     OnResponseHeaderReceived(e);
                     if (e.Cancel)
                     {
@@ -334,7 +351,11 @@ namespace DeanCCCore.Core
             //    Common.UploaderLimiter.Release(e.Host);
             //    e.Locked = false;
             //}
-            triedCount++;
+            if (e.TriedDownload)
+            {
+                triedCount++;
+            }
+
             if (e.Downloaded)
             {
                 firstDownloadedTime = DateTime.Now;
@@ -384,8 +405,8 @@ namespace DeanCCCore.Core
                 string defaultFileName = ResponseUtility.GetDefaultFileName(e.ResponseHeader);
                 string invalidableFileName = string.IsNullOrEmpty(defaultFileName) ?
                     Path.GetFileName(e.ResponseHeader.ResponseUri.AbsolutePath) : defaultFileName;
-                string safeFileName = FileNameFormat.EscapeFileName(invalidableFileName);
-                string extension = FileNameFormat.GetImageExteinsion(safeFileName);
+                string safeFileName = Utility.FileNameFormat.EscapeFileName(invalidableFileName);
+                string extension = Utility.FileNameFormat.GetImageExteinsion(safeFileName);
                 if (extension == string.Empty)
                 {
                     extension = Path.GetExtension(e.ResponseHeader.ResponseUri.AbsolutePath);
@@ -468,7 +489,7 @@ namespace DeanCCCore.Core
             return string.Empty;
         }
 
-        public virtual void Save(byte[] data, string saveFolder)
+        public virtual void Save(byte[] data, string saveFolder , string fileNameFormat)
         {
             if (string.IsNullOrEmpty(fileName))
             {
@@ -480,14 +501,16 @@ namespace DeanCCCore.Core
             }
 
             Directory.CreateDirectory(saveFolder);
-            string savePath = Path.Combine(saveFolder, fileName);
+            string formatedFileName = Format(fileNameFormat);
+            string safeFileName = Utility.FileNameFormat.EscapeFileName(formatedFileName);
+            string savePath = Path.Combine(saveFolder, safeFileName);
             if (File.Exists(savePath))
             {
-                if (fileName.Length > MaximumRenameableLength)
+                if (safeFileName.Length > MaximumRenameableLength)
                 {
                     return;
                 }
-                savePath = FileNameFormat.Rename(savePath);
+                savePath = Utility.FileNameFormat.Rename(savePath);
             }
             using (FileStream fs = new FileStream(savePath, FileMode.CreateNew))
             {
@@ -503,6 +526,25 @@ namespace DeanCCCore.Core
             state = ImageState.Non;
             triedCount = 0;
             firstDownloadedTime = DateTime.MinValue;
+        }
+
+
+        public string Format(string text)
+        {
+            if (text == FileNameFormat)
+            {
+                return fileName;
+            }
+
+            string extension = Utility.FileNameFormat.GetImageExteinsion(fileName);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+
+            string replacedText = text.Replace(ResNumberFormat, (SourceResIndex+1).ToString());
+            replacedText = replacedText.Replace(FileNameFormat, fileNameWithoutExtension);
+
+            string formatedFileName = replacedText + extension;
+
+            return formatedFileName;
         }
     }
 }

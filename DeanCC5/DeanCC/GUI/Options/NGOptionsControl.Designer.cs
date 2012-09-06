@@ -68,17 +68,17 @@
             // 
             // addClipboardButton
             // 
-            this.addClipboardButton.Location = new System.Drawing.Point(6, 168);
+            this.addClipboardButton.Location = new System.Drawing.Point(361, 45);
             this.addClipboardButton.Name = "addClipboardButton";
-            this.addClipboardButton.Size = new System.Drawing.Size(156, 23);
+            this.addClipboardButton.Size = new System.Drawing.Size(75, 23);
             this.addClipboardButton.TabIndex = 9;
-            this.addClipboardButton.Text = "クリップボードからまとめて追加";
+            this.addClipboardButton.Text = "クリップボード";
             this.addClipboardButton.UseVisualStyleBackColor = true;
             this.addClipboardButton.Click += new System.EventHandler(this.addClipboardButton_Click);
             // 
             // removeButton
             // 
-            this.removeButton.Location = new System.Drawing.Point(361, 168);
+            this.removeButton.Location = new System.Drawing.Point(361, 79);
             this.removeButton.Name = "removeButton";
             this.removeButton.Size = new System.Drawing.Size(75, 23);
             this.removeButton.TabIndex = 8;
@@ -90,17 +90,18 @@
             // 
             this.ngListBox.FormattingEnabled = true;
             this.ngListBox.ItemHeight = 12;
-            this.ngListBox.Location = new System.Drawing.Point(6, 41);
+            this.ngListBox.Location = new System.Drawing.Point(6, 79);
             this.ngListBox.MultiColumn = true;
             this.ngListBox.Name = "ngListBox";
             this.ngListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.ngListBox.Size = new System.Drawing.Size(430, 124);
+            this.ngListBox.Size = new System.Drawing.Size(349, 112);
             this.ngListBox.Sorted = true;
             this.ngListBox.TabIndex = 6;
+            this.ngListBox.SelectedIndexChanged += new System.EventHandler(this.ngListBox_SelectedIndexChanged);
             // 
             // addButton
             // 
-            this.addButton.Location = new System.Drawing.Point(280, 168);
+            this.addButton.Location = new System.Drawing.Point(361, 16);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(75, 23);
             this.addButton.TabIndex = 7;
@@ -112,9 +113,9 @@
             // 
             this.ngTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.ngTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.AllUrl;
-            this.ngTextBox.Location = new System.Drawing.Point(6, 13);
+            this.ngTextBox.Location = new System.Drawing.Point(6, 18);
             this.ngTextBox.Name = "ngTextBox";
-            this.ngTextBox.Size = new System.Drawing.Size(430, 19);
+            this.ngTextBox.Size = new System.Drawing.Size(349, 19);
             this.ngTextBox.TabIndex = 5;
             this.toolTip.SetToolTip(this.ngTextBox, "ここで指定した文字を含む画像URLはダウンロードされません。\r\n大文字と小文字の区別はされません。");
             // 

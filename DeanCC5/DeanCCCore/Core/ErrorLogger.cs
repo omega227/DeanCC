@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
+using DeanCCCore.Core.Options;
+using System.Reflection;
 
 namespace DeanCCCore.Core
 {
@@ -20,6 +22,8 @@ namespace DeanCCCore.Core
 ======= ▼ここから▼ =======
 DeanCC {1}
 {2}
+変更されたオプション：
+{3}
 ======= ▲ここまで▲ =======
 
 ";
@@ -37,6 +41,8 @@ DeanCC {1}
         {
             string log = error is AggregateException ?
                 ((System.AggregateException)error).InnerException.ToString() : error.ToString();
+            //string changedOptions = GetChangedOptions();
+            //changedOptions = string.IsNullOrEmpty(changedOptions) ? "なし" : changedOptions;
             string formatedLog = string.Format(LogFormat, DateTime.Now, Common.VersionText, log);
             string text = File.Exists(SavePath) ? formatedLog : Discription + formatedLog;
             string maskedText = text.Replace(Settings.SaveFolder, SaveFolderFormat);
@@ -52,5 +58,24 @@ DeanCC {1}
                 writer.Write(maskedText);
             }
         }
+
+        //private static string GetChangedOptions()
+        //{
+        //    StringBuilder changedOptions = new StringBuilder();
+        //    OptionItems defaultOption = new OptionItems();
+        //    typeof(OptionItems).GetMembers().Where(member => member.MemberType == System.Reflection.MemberTypes.Property).ToList().ForEach(option =>
+        //        {
+        //            option.GetType()..GetMembers().Where(member => member.MemberType == System.Reflection.MemberTypes.Property).ToList().ForEach(member =>
+        //                {
+        //                    PropertyInfo optionProperty = (PropertyInfo)member;
+        //                    if (optionProperty.GetValue(defaultOption, null) != optionProperty.GetValue(defaultOption, null))
+        //                    {
+        //                        changedOptions.AppendLine(optionProperty.Name);
+        //                    }
+        //                });
+        //        });
+
+        //    return changedOptions.ToString();
+        //}
     }
 }

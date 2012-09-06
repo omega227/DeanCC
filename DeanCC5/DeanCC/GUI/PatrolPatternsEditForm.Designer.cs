@@ -40,12 +40,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.patrolPatternPanel = new System.Windows.Forms.Panel();
-            this.patrolPatternEditControl1 = new DeanCC.GUI.PatrolPatternEditControl();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.boardTableVisibleButton = new System.Windows.Forms.Button();
-            this.boardTableTreeView = new DeanCC.GUI.BoardTableTreeView();
-            this.patrolPatternTreeView1 = new DeanCC.GUI.PatrolPatternTreeView();
             this.separatorLable1 = new DeanCC.GUI.SeparatorLable();
+            this.patrolPatternEditControl1 = new DeanCC.GUI.PatrolPatternEditControl();
+            this.patrolPatternTreeView1 = new DeanCC.GUI.PatrolPatternTreeView();
+            this.boardTableTreeView = new DeanCC.GUI.BoardTableTreeView();
             this.toolStrip1.SuspendLayout();
             this.patrolPatternPanel.SuspendLayout();
             this.SuspendLayout();
@@ -163,14 +163,6 @@
             this.patrolPatternPanel.TabIndex = 6;
             this.patrolPatternPanel.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.patrolPatternPanel_ControlAdded);
             // 
-            // patrolPatternEditControl1
-            // 
-            this.patrolPatternEditControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.patrolPatternEditControl1.Location = new System.Drawing.Point(0, 0);
-            this.patrolPatternEditControl1.Name = "patrolPatternEditControl1";
-            this.patrolPatternEditControl1.Size = new System.Drawing.Size(332, 311);
-            this.patrolPatternEditControl1.TabIndex = 0;
-            // 
             // folderBrowserDialog1
             // 
             this.folderBrowserDialog1.Description = "追加する保存フォルダーを指定して下さい";
@@ -186,6 +178,33 @@
             this.boardTableVisibleButton.Visible = false;
             this.boardTableVisibleButton.Click += new System.EventHandler(this.boardTableVisibleButton_Click);
             // 
+            // separatorLable1
+            // 
+            this.separatorLable1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.separatorLable1.Location = new System.Drawing.Point(12, 360);
+            this.separatorLable1.Name = "separatorLable1";
+            this.separatorLable1.Size = new System.Drawing.Size(618, 2);
+            this.separatorLable1.TabIndex = 9;
+            this.separatorLable1.Text = "separatorLable1";
+            // 
+            // patrolPatternEditControl1
+            // 
+            this.patrolPatternEditControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.patrolPatternEditControl1.Location = new System.Drawing.Point(0, 0);
+            this.patrolPatternEditControl1.Name = "patrolPatternEditControl1";
+            this.patrolPatternEditControl1.Size = new System.Drawing.Size(332, 311);
+            this.patrolPatternEditControl1.TabIndex = 0;
+            // 
+            // patrolPatternTreeView1
+            // 
+            this.patrolPatternTreeView1.ImageIndex = 0;
+            this.patrolPatternTreeView1.Location = new System.Drawing.Point(12, 50);
+            this.patrolPatternTreeView1.Name = "patrolPatternTreeView1";
+            this.patrolPatternTreeView1.SelectedImageIndex = 0;
+            this.patrolPatternTreeView1.Size = new System.Drawing.Size(176, 284);
+            this.patrolPatternTreeView1.TabIndex = 3;
+            this.patrolPatternTreeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.patrolPatternTreeView1_AfterSelect);
+            // 
             // boardTableTreeView
             // 
             this.boardTableTreeView.ImageIndex = 0;
@@ -198,25 +217,6 @@
             this.boardTableTreeView.Visible = false;
             this.boardTableTreeView.BoardSelected += new System.EventHandler<DeanCC.GUI.BoardTableTreeViewItemSelectedEventArgs>(this.boardTableTreeView_BoardSelected);
             // 
-            // patrolPatternTreeView1
-            // 
-            this.patrolPatternTreeView1.ImageIndex = 0;
-            this.patrolPatternTreeView1.Location = new System.Drawing.Point(12, 50);
-            this.patrolPatternTreeView1.Name = "patrolPatternTreeView1";
-            this.patrolPatternTreeView1.SelectedImageIndex = 0;
-            this.patrolPatternTreeView1.Size = new System.Drawing.Size(176, 284);
-            this.patrolPatternTreeView1.TabIndex = 3;
-            this.patrolPatternTreeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.patrolPatternTreeView1_AfterSelect);
-            // 
-            // separatorLable1
-            // 
-            this.separatorLable1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.separatorLable1.Location = new System.Drawing.Point(12, 360);
-            this.separatorLable1.Name = "separatorLable1";
-            this.separatorLable1.Size = new System.Drawing.Size(618, 2);
-            this.separatorLable1.TabIndex = 9;
-            this.separatorLable1.Text = "separatorLable1";
-            // 
             // PatrolPatternsEditForm
             // 
             this.AcceptButton = this.okButton;
@@ -224,8 +224,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(642, 409);
-            this.Controls.Add(this.separatorLable1);
             this.Controls.Add(this.boardTableTreeView);
+            this.Controls.Add(this.separatorLable1);
             this.Controls.Add(this.boardTableVisibleButton);
             this.Controls.Add(this.patrolPatternPanel);
             this.Controls.Add(this.label2);

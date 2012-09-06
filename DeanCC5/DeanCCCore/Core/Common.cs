@@ -203,9 +203,18 @@ namespace DeanCCCore.Core
         }
 
         /// <summary>
-        /// 初回起動時の説明を表示したかどうか
+        /// 初回起動時巡回設定の説明を表示したかどうか
         /// </summary>
-        public static bool ShowsFirstDescription
+        public static bool ShowsFirstPatrolPatternEditDescription
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 初回起動時オプションの説明を表示したかどうか
+        /// </summary>
+        public static bool ShowsFirstOptionDescription
         {
             get;
             set;
@@ -276,10 +285,10 @@ namespace DeanCCCore.Core
         //}
 
         //private static bool loadBackup;
-        //private static bool crash;
-        //public static bool Crash
+        //private static bool crush;
+        //public static bool Crush
         //{
-        //    get { return crash; }
+        //    get { return crush; }
         //}
 
         /// <summary>
@@ -288,8 +297,8 @@ namespace DeanCCCore.Core
         /// </summary>
         public static void Initialize()
         {
-            //crash = Settings.Crashed && File.Exists(Settings.BackUpSavePath);
-            //if (crash)
+            //crush = Settings.Crushed && File.Exists(Settings.BackUpSavePath);
+            //if (crush)
             //{                
             //    if (MessageBox.Show("異常終了を検出しました。\n設定ファイルのバックアップを適用しますか？",
             //        "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
@@ -319,7 +328,7 @@ namespace DeanCCCore.Core
             //シリアル化インスタンス
             //アプリケーション設定
             currentSettings = settings;
-            currentSettings.MarkCrash();
+            currentSettings.MarkCrush();
             //ユーザー設定
             Options = options;
             Options.ItemsChanged += new EventHandler(Options_ItemsChanged);

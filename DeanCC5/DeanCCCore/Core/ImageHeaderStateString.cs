@@ -41,6 +41,8 @@ namespace DeanCCCore.Core
                     return "原因不明の失敗です";
                 case ImageDownloadResultStatus.InvalidUriFormat:
                     return "ダウンロードURIの形式が正しくありません";
+                case ImageDownloadResultStatus.FailedReplaceExtractUrl:
+                    return "$EXTRACTオプションでの画像URLの取得に失敗しました";
                 case ImageDownloadResultStatus.OverLimitDate:
                     return "最大試行日数を超えています";
                 case ImageDownloadResultStatus.OverTriedCount:

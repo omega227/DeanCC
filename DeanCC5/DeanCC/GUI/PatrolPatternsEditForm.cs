@@ -29,6 +29,8 @@ namespace DeanCC.GUI
                 {
                     MessageBox.Show("ルートフォルダーは追加できません。\nそれ以外のフォルダーを追加してください。",
                         "確認", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    //再表示
+                    addFolderToolStripButton.PerformClick();
                     return;
                 }
 
@@ -158,11 +160,11 @@ namespace DeanCC.GUI
 
         private void PatrolPatternsEditForm_Shown(object sender, EventArgs e)
         {
-            if (Common.CurrentSettings.FirstRunning && !Common.ShowsFirstDescription)
+            if (Common.CurrentSettings.FirstRunning && !Common.ShowsFirstPatrolPatternEditDescription)
             {
                 MessageBox.Show("最初に巡回するスレッドの設定をする必要があります。\n画像を保存するフォルダーの登録と、巡回設定の作成をして下さい。"
                     , "初回起動", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Common.ShowsFirstDescription = true;
+                Common.ShowsFirstPatrolPatternEditDescription = true;
                 restartsTimer = true;
             }
         }

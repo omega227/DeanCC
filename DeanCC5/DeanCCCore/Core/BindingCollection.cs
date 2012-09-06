@@ -43,7 +43,7 @@ namespace DeanCCCore.Core
                     (value != null && !filterPredicate.Equals(value)))
                 {
                     filterPredicate = value;
-                    OnFilterPredicateChaged();
+                    OnFilterPredicateChanged();
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace DeanCCCore.Core
             FilterPredicate = predicate;
         }
 
-        private void OnFilterPredicateChaged()
+        private void OnFilterPredicateChanged()
         {
             if (!filtered)
             {

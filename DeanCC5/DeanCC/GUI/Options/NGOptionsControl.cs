@@ -109,5 +109,13 @@ namespace DeanCC.GUI.Options
         {
             get { return loaded; }
         }
+
+        private void ngListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ngListBox.SelectedItem != null)
+            {
+                ngTextBox.Text = ngListBox.SelectedItem.ToString();
+            }
+        }
     }
 }

@@ -67,6 +67,9 @@
     <Compile Include="Core\2ch\DownloadPausedThreadCollection.cs" />
     <Compile Include="Core\2ch\ImagePassEventArgs.cs" />
     <Compile Include="Core\2ch\IndividualPatrolPattern.cs" />
+    <Compile Include="Core\2ch\Jane\ImageViewUrlCookieItem.cs" />
+    <Compile Include="Core\2ch\Jane\ImageViewUrlExtractItem.cs" />
+    <Compile Include="Core\2ch\Jane\ImageViewUrlItem.cs" />
     <Compile Include="Core\2ch\Jane\IReplaceStr.cs" />
     <Compile Include="Core\2ch\Jane\ReplaceStr.cs" />
     <Compile Include="Core\2ch\Res.cs" />
@@ -105,6 +108,7 @@
     <Compile Include="Core\IPCClient.cs" />
     <Compile Include="Core\IPCServer.cs" />
     <Compile Include="Core\KeywordCollection.cs" />
+    <Compile Include="Core\MaybeImageHeader.cs" />
     <Compile Include="Core\Options\CommandOptionsItem.cs" />
     <Compile Include="Core\Options\ImageSaveOptionsItem.cs" />
     <Compile Include="Core\Options\IndividualThreadOptionsItem.cs" />
@@ -187,6 +191,9 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Memo.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
