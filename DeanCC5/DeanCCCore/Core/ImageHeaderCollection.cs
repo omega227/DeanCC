@@ -33,11 +33,11 @@ namespace DeanCCCore.Core
 
         protected override void InsertItem(int index, IImageHeader item)
         {
+            base.InsertItem(index, item);
             if (item.IsZip)
             {
-                zipCount = ZipCount + 1;
+                ZipCount++;
             }
-            base.InsertItem(index, item);
         }
 
         [NonSerialized]
@@ -52,6 +52,10 @@ namespace DeanCCCore.Core
                     zipCount = this.Count(image => image.IsZip);
                 }
                 return (int)zipCount;
+            }
+            private set
+            {
+                zipCount = value;
             }
         }
 

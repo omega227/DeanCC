@@ -36,10 +36,10 @@
             this.ngListBox = new System.Windows.Forms.ListBox();
             this.addButton = new System.Windows.Forms.Button();
             this.ngTextBox = new System.Windows.Forms.TextBox();
-            this.NGFilesOpenFileControl = new DeanCC.GUI.Options.OpenFileControl();
             this.globalNGTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.NGFilesOpenFileControl = new DeanCC.GUI.Options.OpenFileControl();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -89,13 +89,12 @@
             // ngListBox
             // 
             this.ngListBox.FormattingEnabled = true;
+            this.ngListBox.HorizontalScrollbar = true;
             this.ngListBox.ItemHeight = 12;
             this.ngListBox.Location = new System.Drawing.Point(6, 79);
-            this.ngListBox.MultiColumn = true;
             this.ngListBox.Name = "ngListBox";
-            this.ngListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.ngListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.ngListBox.Size = new System.Drawing.Size(349, 112);
-            this.ngListBox.Sorted = true;
             this.ngListBox.TabIndex = 6;
             this.ngListBox.SelectedIndexChanged += new System.EventHandler(this.ngListBox_SelectedIndexChanged);
             // 
@@ -119,16 +118,6 @@
             this.ngTextBox.TabIndex = 5;
             this.toolTip.SetToolTip(this.ngTextBox, "ここで指定した文字を含む画像URLはダウンロードされません。\r\n大文字と小文字の区別はされません。");
             // 
-            // NGFilesOpenFileControl
-            // 
-            this.NGFilesOpenFileControl.Filter = "NGFiles.txt|NGFiles.txt|すべてのファイル(*.*)|*.*";
-            this.NGFilesOpenFileControl.Location = new System.Drawing.Point(15, 76);
-            this.NGFilesOpenFileControl.Name = "NGFilesOpenFileControl";
-            this.NGFilesOpenFileControl.SelectedPath = null;
-            this.NGFilesOpenFileControl.Size = new System.Drawing.Size(436, 26);
-            this.NGFilesOpenFileControl.TabIndex = 1;
-            this.NGFilesOpenFileControl.Title = "NGFiles.txtの参照";
-            // 
             // globalNGTextBox
             // 
             this.globalNGTextBox.Location = new System.Drawing.Point(15, 24);
@@ -151,6 +140,16 @@
             this.toolTip.AutoPopDelay = 5000;
             this.toolTip.InitialDelay = 100;
             this.toolTip.ReshowDelay = 100;
+            // 
+            // NGFilesOpenFileControl
+            // 
+            this.NGFilesOpenFileControl.Filter = "NGFiles.txt|NGFiles.txt|すべてのファイル(*.*)|*.*";
+            this.NGFilesOpenFileControl.Location = new System.Drawing.Point(15, 76);
+            this.NGFilesOpenFileControl.Name = "NGFilesOpenFileControl";
+            this.NGFilesOpenFileControl.SelectedPath = null;
+            this.NGFilesOpenFileControl.Size = new System.Drawing.Size(436, 26);
+            this.NGFilesOpenFileControl.TabIndex = 1;
+            this.NGFilesOpenFileControl.Title = "NGFiles.txtの参照";
             // 
             // NGOptionsControl
             // 

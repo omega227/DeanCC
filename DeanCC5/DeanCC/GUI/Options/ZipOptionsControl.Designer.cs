@@ -29,7 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ZipOptionsControl));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.smapleKeysComboBox = new System.Windows.Forms.ComboBox();
             this.removeButton = new System.Windows.Forms.Button();
             this.keywordListBox = new System.Windows.Forms.ListBox();
             this.addButton = new System.Windows.Forms.Button();
@@ -42,6 +44,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.smapleKeysComboBox);
             this.groupBox1.Controls.Add(this.removeButton);
             this.groupBox1.Controls.Add(this.keywordListBox);
             this.groupBox1.Controls.Add(this.addButton);
@@ -52,6 +55,22 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "キーワード（DLパスワード）";
+            // 
+            // smapleKeysComboBox
+            // 
+            this.smapleKeysComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.smapleKeysComboBox.FormattingEnabled = true;
+            this.smapleKeysComboBox.Items.AddRange(new object[] {
+            "日付8桁 (20000101)",
+            "日付6桁 (000101)",
+            "日付4桁 (0101)",
+            "日付2桁 (01)",
+            "パス： (パス：pass)"});
+            this.smapleKeysComboBox.Location = new System.Drawing.Point(312, 12);
+            this.smapleKeysComboBox.Name = "smapleKeysComboBox";
+            this.smapleKeysComboBox.Size = new System.Drawing.Size(126, 20);
+            this.smapleKeysComboBox.TabIndex = 9;
+            this.smapleKeysComboBox.SelectedIndexChanged += new System.EventHandler(this.smapleKeysComboBox_SelectedIndexChanged);
             // 
             // removeButton
             // 
@@ -68,11 +87,9 @@
             this.keywordListBox.FormattingEnabled = true;
             this.keywordListBox.ItemHeight = 12;
             this.keywordListBox.Location = new System.Drawing.Point(6, 41);
-            this.keywordListBox.MultiColumn = true;
             this.keywordListBox.Name = "keywordListBox";
-            this.keywordListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.keywordListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.keywordListBox.Size = new System.Drawing.Size(432, 136);
-            this.keywordListBox.Sorted = true;
             this.keywordListBox.TabIndex = 6;
             // 
             // addButton
@@ -96,10 +113,9 @@
             this.keywordTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.keywordTextBox.Location = new System.Drawing.Point(6, 13);
             this.keywordTextBox.Name = "keywordTextBox";
-            this.keywordTextBox.Size = new System.Drawing.Size(432, 19);
+            this.keywordTextBox.Size = new System.Drawing.Size(300, 19);
             this.keywordTextBox.TabIndex = 5;
-            this.toolTip.SetToolTip(this.keywordTextBox, "ZIPファイルをダウンロードする際に使用するパスワードを指定します。\r\n[フォーマット]※DATを保存している場合にのみ有効です\r\n%id%：レスのID\r\n%na" +
-                    "me%：レスの名前欄\r\n%mail%：レスのメール欄\r\n%key%:スレッド固有の番号");
+            this.toolTip.SetToolTip(this.keywordTextBox, resources.GetString("keywordTextBox.ToolTip"));
             // 
             // SavesSameImagePathCheckBox
             // 
@@ -155,5 +171,6 @@
         private System.Windows.Forms.CheckBox SavesSameImagePathCheckBox;
         private FolderBrowserControl savePathFolderBrowserControl;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.ComboBox smapleKeysComboBox;
     }
 }

@@ -120,4 +120,19 @@
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="keywordTextBox.ToolTip" xml:space="preserve">
+    <value>ZIPファイルをダウンロードする際に使用するパスワードを指定します。
+[フォーマット]※DATを保存している場合にのみ有効です
+%id%：レスのID
+%name%：レスの名前欄
+%mail%：レスのメール欄
+%body=パターン%:レスの本文から文字列を抜き出すパターン
+%date=書式%:レスの日付を整形する書式
+%key%:スレッド固有の番号
+
+※%body=パターン%では正規表現による一致検索ができます。
+例 %body=パス|ぱす|pass.*?([a-z0-9]+)%
+※%date=パターン%では書式による日付入力ができます
+例 %date=MMdd%</value>
+  </data>
 </root>

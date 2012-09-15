@@ -4,12 +4,14 @@ using System.Windows.Forms;
 
 namespace DeanCC.GUI.Options
 {
-    public sealed partial class ZipOptionsControl : UserControl , IOptionsControl
+    public sealed partial class ZipOptionsControl : UserControl, IOptionsControl
     {
         public ZipOptionsControl()
         {
             InitializeComponent();
         }
+
+        private static readonly string[] sampleKeywordFormats = { "%date=yyyyMMdd%", "%date=yyMMdd%", "%date=MMdd%", "%date=dd%", "%body=パス|ぱす|pass.*?([a-z0-9]+)%" };
 
         public void Get(DeanCCCore.Core.Options.OptionItems destination)
         {
@@ -52,12 +54,17 @@ namespace DeanCC.GUI.Options
 
         private void removeButton_Click(object sender, EventArgs e)
         {
-            if (keywordListBox.SelectedIndices != null)
+            while (keywordListBox.SelectedIndices.Count > 0)
             {
-                foreach (int i in keywordListBox.SelectedIndices)
-                {
-                    keywordListBox.Items.RemoveAt(i);
-                }
+                keywordListBox.Items.RemoveAt(keywordListBox.SelectedIndices[0]);
+            }
+        }
+
+        private void smapleKeysComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (smapleKeysComboBox.SelectedIndex >= 0)
+            {
+                keywordTextBox.Text = sampleKeywordFormats[smapleKeysComboBox.SelectedIndex];
             }
         }
     }

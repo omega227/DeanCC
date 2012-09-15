@@ -23,7 +23,7 @@ namespace DeanCCCore.Core._2ch
         private const double WaitTimeout = 15 * 1000;
         private static readonly string SecureImageLogSaveFolder = Path.Combine(Settings.SaveFolder, "Htmls");
         private const string SecureImageLogFileNameFormat = "{0}.image.html";
-        private static readonly HttpStatusCode[] ImpossibleDownloadStatuses = { HttpStatusCode.ServiceUnavailable };
+        private static readonly HttpStatusCode[] PauseDownloadStatuses = { HttpStatusCode.RequestTimeout, HttpStatusCode.ServiceUnavailable };
         private const int DownloadInterval = 1500;
 
         public static event EventHandler<ImageDownloadEventArgs> Downloading;
@@ -184,16 +184,14 @@ namespace DeanCCCore.Core._2ch
 
         private IEnumerable<IImageHeader> GetDownloadImages()
         {
-            //if (Common.Options.BrowsersOptions.JaneOptions.EnableImageViewURLReplacedatOption)
-            //{
-            //    List<IImageHeader> allImageHeader = imageHeaders.ToList();
-            //    allImageHeader.AddRange(maybeImageHeaders);
-            //    return allImageHeader.Where(image => !image.DownloadCompleted && image.Downloadable);
-            //}
-            //else
-            //{
+            if (Common.ImageViewURLReplacer != null && Common.ImageViewURLReplacer.EnableOption)
+            {
                 return imageHeaders.Where(image => !image.DownloadCompleted && image.Downloadable);
-            //}
+            }
+            else
+            {
+                return imageHeaders.Where(image => !image.DownloadCompleted && image.Downloadable && !(image is MaybeImageHeader));
+            }
         }
 
         /// <summary>
@@ -218,8 +216,10 @@ namespace DeanCCCore.Core._2ch
             {
                 System.Threading.Tasks.Parallel.ForEach(Uploader.Split(downloadImages), (uploader, loopState) =>
                 {
-                    foreach (IImageHeader image in uploader.ImageHeaders)
+                    int i;
+                    for (i = 0; i < uploader.ImageHeaders.Count; i++)
                     {
+                        IImageHeader image = uploader.ImageHeaders[i];
                         if (cancellationDownload)
                         {
                             loopState.Break();
@@ -243,13 +243,24 @@ namespace DeanCCCore.Core._2ch
                                     throw;
                                 }
                                 HttpWebResponse errorResponse = (HttpWebResponse)ex.Response;
-                                if (ImpossibleDownloadStatuses.Contains(errorResponse.StatusCode))
+                                if (PauseDownloadStatuses.Contains(errorResponse.StatusCode))
                                 {
-                                    return;
+                                    //一時定期にアップローダが利用できない場合は次までダウンロードを停止
+                                    break;
                                 }
                             }
                         }
                         totalDownloadedImageCount++;
+                    }
+
+                    //一時停止に設定
+                    bool breakDownload = i < uploader.ImageHeaders.Count;
+                    if (breakDownload)
+                    {                       
+                        for (; i < uploader.ImageHeaders.Count; i++)
+                        {
+                            uploader.ImageHeaders[i].State = ImageState.DownloadPause;
+                        }
                     }
                 });
             }

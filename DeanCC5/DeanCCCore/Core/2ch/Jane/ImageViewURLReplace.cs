@@ -58,6 +58,11 @@ namespace DeanCCCore.Core._2ch.Jane
 
         private bool loaded;
         public bool Loaded { get { return loaded; } }
+        public bool EnableOption
+        {
+            get;
+            private set;
+        }
 
         private string path;
         public string Path
@@ -150,6 +155,7 @@ namespace DeanCCCore.Core._2ch.Jane
         private void OnLoaded()
         {
             loaded = true;
+            EnableOption = items.Any(item => item.WithOption);
             Common.Logs.Add("ImageViewURLReplace.dat読み込み完了",
                 string.Format("{0:N0}パターン", items.Count), LogStatus.System);
         }

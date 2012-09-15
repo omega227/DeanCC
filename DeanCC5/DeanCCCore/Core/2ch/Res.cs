@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace DeanCCCore.Core._2ch
 {
     public sealed class Res
     {
-        private static readonly Regex ResPattern = new Regex(@"^(?<Name>.*)<>(?<Mail>.*)<>(?<ID>.*)<>(?<Body>.*)<>.*$", RegexOptions.Multiline | RegexOptions.Compiled);
+        private static readonly Regex ResPattern = new Regex(@"^(?<Name>.*)<>(?<Mail>.*)<>(?<Date>.*?)(ID:(?<ID>.*))?<>(?<Body>.*)<>.*$", RegexOptions.Multiline | RegexOptions.Compiled);
+        private static readonly string[] DateFormats = { "d" };
         public const string IDFormat = "%id%";
         public const string MailFormat = "%mail%";
         public const string NameFormat = "%name%";
-        public const string BodyFormat = "%body%";
+        private static readonly Regex BodyFormatPattern = new Regex("%body=(.+?)%", RegexOptions.IgnoreCase);
+        private static readonly Regex DateFormatPattern = new Regex("%date=(.+?)%", RegexOptions.IgnoreCase);
 
         public Res(string dat)
         {
@@ -24,9 +27,24 @@ namespace DeanCCCore.Core._2ch
             Match res = ResPattern.Match(dat);
             Name = res.Groups["Name"].Value;
             Mail = res.Groups["Mail"].Value;
+            DateTime date = TryParseDateTime(res.Groups["Date"].Value);
             ID = res.Groups["ID"].Value;
             Body = res.Groups["Body"].Value;
+
             OriginalDat = dat;
+        }
+
+        private DateTime TryParseDateTime(string dateString)
+        {
+            DateTime date;
+            if (DateTime.TryParseExact(dateString, DateFormats, CultureInfo.CurrentCulture, DateTimeStyles.AllowWhiteSpaces, out date))
+            {
+                return date;
+            }
+            else
+            {
+                return DateTime.Now;
+            }
         }
 
         public static bool ContainsFormat(string target)
@@ -34,7 +52,8 @@ namespace DeanCCCore.Core._2ch
             return target.Contains(IDFormat) ||
                   target.Contains(MailFormat) ||
                   target.Contains(NameFormat) ||
-                  target.Contains(BodyFormat);
+                  BodyFormatPattern.IsMatch(target) ||
+                  DateFormatPattern.IsMatch(target);
         }
 
         public string Format(string target)
@@ -42,11 +61,36 @@ namespace DeanCCCore.Core._2ch
             string replacedTarget = target.Replace(IDFormat, ID);
             replacedTarget = replacedTarget.Replace(MailFormat, Mail);
             replacedTarget = replacedTarget.Replace(NameFormat, Name);
-            replacedTarget = replacedTarget.Replace(BodyFormat, Body);
+            replacedTarget = ReplaceBodyFormat(replacedTarget);
+            replacedTarget = ReplaceDateFormat(replacedTarget);
+
+            return replacedTarget;
+        }
+
+        private string ReplaceBodyFormat(string target)
+        {
+            //1つだけ本文に正規表現マッチをして置換する
+            Match bodyFormatMatch = BodyFormatPattern.Match(target);
+            string bodyFormat = bodyFormatMatch.Groups[1].Value;             
+            string bodyMatch = Regex.Match(Body, bodyFormat).Groups[1].Value;
+            string replacedTarget = target.Replace(bodyFormatMatch.Value, bodyMatch);
+
+            return replacedTarget;
+        }
+
+        private string ReplaceDateFormat(string target)
+        {
+            //一つだけ日付フォーマットを置換する
+            Match dateFormatMatch = DateFormatPattern.Match(target);
+            string dateFormat = dateFormatMatch.Groups[1].Value;
+            string dateString = Date.ToString(dateFormat);
+            string replacedTarget = target.Replace(dateFormatMatch.Value, dateString);
+
             return replacedTarget;
         }
 
         public string Name { get; set; }
+        public DateTime Date { get; set; }
         public string ID { get; set; }
         public string Body { get; set; }
         public string Mail { get; set; }

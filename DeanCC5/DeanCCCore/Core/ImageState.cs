@@ -24,9 +24,9 @@ namespace DeanCCCore.Core
         /// </summary>
         NGFile,
         /// <summary>
-        /// 再取得
+        /// 一時停止中
         /// </summary>
-        Retry,
+        DownloadPause,
         /// <summary>
         /// パス付・画像認証
         /// </summary>

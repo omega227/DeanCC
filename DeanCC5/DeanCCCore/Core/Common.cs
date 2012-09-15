@@ -695,6 +695,11 @@ namespace DeanCCCore.Core
         {
             get
             {
+                if (downloadedImageHashes == null)
+                {
+                    downloadedImageHashes = CreateHashes();
+                    OnCreatedDownloadedImageHashes();
+                }
                 return downloadedImageHashes;
             }
         }
@@ -872,11 +877,11 @@ namespace DeanCCCore.Core
             {
                 imageViewURLRepalcer.Load();
             }
-            if (downloadedImageHashes == null)
-            {
-                downloadedImageHashes = CreateHashes();
-                OnCreatedDownloadedImageHashes();
-            }
+            //if (downloadedImageHashes == null)
+            //{
+            //    downloadedImageHashes = CreateHashes();
+            //    OnCreatedDownloadedImageHashes();
+            //}
             if (ngFiles != null && !ngFiles.Loaded)
             {
                 ngFiles.Load();

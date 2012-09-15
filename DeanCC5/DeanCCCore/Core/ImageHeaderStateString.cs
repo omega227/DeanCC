@@ -17,8 +17,8 @@ namespace DeanCCCore.Core
                     return "ダウンロード失敗";
                 case ImageState.NGFile:
                     return "NG画像";
-                case ImageState.Retry:
-                    return "再ダウンロード";
+                case ImageState.DownloadPause:
+                    return "一時停止中";
                 case ImageState.Secure:
                     return "パス付き画像";
                 default:

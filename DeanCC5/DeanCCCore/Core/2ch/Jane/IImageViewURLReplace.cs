@@ -10,5 +10,6 @@ namespace DeanCCCore.Core._2ch.Jane
         ImageViewURLReplaceItem Replace(string url);
         bool IsMatch(string url);
         void Reload();
+        bool EnableOption { get; }
     }
 }

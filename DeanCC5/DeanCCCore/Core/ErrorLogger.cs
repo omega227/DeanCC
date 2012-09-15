@@ -41,9 +41,8 @@ DeanCC {1}
         {
             string log = error is AggregateException ?
                 ((System.AggregateException)error).InnerException.ToString() : error.ToString();
-            //string changedOptions = GetChangedOptions();
-            //changedOptions = string.IsNullOrEmpty(changedOptions) ? "なし" : changedOptions;
-            string formatedLog = string.Format(LogFormat, DateTime.Now, Common.VersionText, log);
+            string changedOptions = GetChangedOptions();
+            string formatedLog = string.Format(LogFormat, DateTime.Now, Common.VersionText, log, changedOptions);
             string text = File.Exists(SavePath) ? formatedLog : Discription + formatedLog;
             string maskedText = text.Replace(Settings.SaveFolder, SaveFolderFormat);
             maskedText = maskedText.Replace(UserNamePrefix + Environment.UserName, UserNamePrefix + UserNameFormat);
@@ -59,23 +58,61 @@ DeanCC {1}
             }
         }
 
-        //private static string GetChangedOptions()
-        //{
-        //    StringBuilder changedOptions = new StringBuilder();
-        //    OptionItems defaultOption = new OptionItems();
-        //    typeof(OptionItems).GetMembers().Where(member => member.MemberType == System.Reflection.MemberTypes.Property).ToList().ForEach(option =>
-        //        {
-        //            option.GetType()..GetMembers().Where(member => member.MemberType == System.Reflection.MemberTypes.Property).ToList().ForEach(member =>
-        //                {
-        //                    PropertyInfo optionProperty = (PropertyInfo)member;
-        //                    if (optionProperty.GetValue(defaultOption, null) != optionProperty.GetValue(defaultOption, null))
-        //                    {
-        //                        changedOptions.AppendLine(optionProperty.Name);
-        //                    }
-        //                });
-        //        });
+        private static string GetChangedOptions()
+        {
+            StringBuilder changedOptions = new StringBuilder();
+            OptionItems defaultOption = new OptionItems();
+            typeof(OptionItems).GetProperties().ToList().ForEach(prop =>
+                {
+                    int undoLength = changedOptions.Length;
+                    changedOptions.AppendFormat("[{0}]\r\n", prop.Name);//タグ
+                    int length = changedOptions.Length;
+                    object defaultObject = prop.GetGetMethod().Invoke(defaultOption, null);
+                    object currentObject = prop.GetGetMethod().Invoke(Common.Options, null);
 
-        //    return changedOptions.ToString();
-        //}
+                    GetChangedOptionsInternal(prop, defaultObject, currentObject, changedOptions);
+                    if (length == changedOptions.Length)
+                    {
+                        //変更された値が書き込まれなかったときはタグを削除
+                        changedOptions.Remove(undoLength, length - undoLength);
+                    }
+                });
+
+            return changedOptions.Length > 0 ? changedOptions.ToString() : "なし";
+        }
+
+        private static void GetChangedOptionsInternal(PropertyInfo prop, object defaultObject, object currentObject, StringBuilder changedOptions)
+        {
+            if (prop.CanRead &&
+                prop.PropertyType.Namespace == "DeanCCCore.Core.Options" &&
+                prop.ReflectedType.Namespace == "DeanCCCore.Core.Options" &&
+                !prop.IsSpecialName)
+            {
+                prop.PropertyType.GetProperties().ToList().ForEach(nextProp =>
+                    {
+                        //オプションアイテムから値プロパティを列挙
+                        object nextDefaultObject = nextProp.GetGetMethod().Invoke(defaultObject, null);
+                        object nextCurrentObject = nextProp.GetGetMethod().Invoke(currentObject, null);
+
+                        GetChangedOptionsInternal(nextProp, nextDefaultObject, nextCurrentObject, changedOptions);
+                    });
+            }
+
+            //値プロパティに到達
+            if (defaultObject == null ||
+                prop.PropertyType != typeof(int) &&
+                prop.PropertyType != typeof(double) &&
+                prop.PropertyType != typeof(bool) &&
+                prop.PropertyType != typeof(Enum))
+            {
+                return;
+            }
+
+            //有効な値を書き出し
+            if (!defaultObject.Equals(currentObject))
+            {
+                changedOptions.AppendFormat("{0}={1}\n", prop.Name, currentObject.ToString());
+            }
+        }
     }
 }

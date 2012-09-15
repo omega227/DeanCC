@@ -31,12 +31,9 @@ namespace DeanCC.GUI.Options
 
         private void removeButton_Click(object sender, EventArgs e)
         {
-            if (ngListBox.SelectedIndices != null)
+            while (ngListBox.SelectedIndices.Count > 0)
             {
-                foreach (int i in ngListBox.SelectedIndices)
-                {
-                    ngListBox.Items.RemoveAt(i);
-                }
+                ngListBox.Items.RemoveAt(ngListBox.SelectedIndices[0]);
             }
         }
 

@@ -159,11 +159,11 @@ namespace DeanCC.GUI
                     + " に記録されています。\nこのダイアログを閉じるとアプリケーションを終了します",
                     "DeanCC", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
-            catch (System.IO.IOException)
+            catch (System.Exception)
             {
-                MessageBox.Show("致命的なエラーが発生しました。\n詳細：\n" + e.ExceptionObject.ToString(),
+                MessageBox.Show("致命的なエラーが発生しましたが、ログに記録できませんでした。\n詳細：\n" + e.ExceptionObject.ToString(),
                     "DeanCC", MessageBoxButtons.OK, MessageBoxIcon.Stop);               
-            }
+            }            
             Invoke(new MethodInvoker(Application.Exit));
         }
 

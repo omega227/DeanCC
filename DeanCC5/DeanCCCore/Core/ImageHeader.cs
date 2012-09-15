@@ -18,9 +18,7 @@ namespace DeanCCCore.Core
     public class ImageHeader : IImageHeader
     {
         private const int MaximumRenameableLength = 5;
-        private static readonly HttpStatusCode[] ImpossibleDownloadStatuses = { HttpStatusCode.Forbidden, HttpStatusCode.NotFound };
-        private static readonly HttpStatusCode[] RetryDownloadStatuses = { HttpStatusCode.RequestTimeout };
-        private static readonly HttpStatusCode[] StopDownloadStatuses = { HttpStatusCode.ServiceUnavailable };
+        private static readonly HttpStatusCode[] ImpossibleDownloadStatuses = { HttpStatusCode.Forbidden, HttpStatusCode.NotFound };        
 
         [field: NonSerialized]
         public event EventHandler<ImageHeaderEventArgs> Downloading;
@@ -279,16 +277,6 @@ namespace DeanCCCore.Core
                         downloadable = false;
                         e.Downloaded = false;
                     }
-                    else if (RetryDownloadStatuses.Contains(errorResponse.StatusCode))
-                    {
-                        downloadable = true;
-                        e.Downloaded = false;
-                    }
-                    else if (StopDownloadStatuses.Contains(errorResponse.StatusCode))
-                    {
-                        downloadable = true;
-                        e.Downloaded = false;
-                    }
                     else
                     {
                         throw;
@@ -368,7 +356,7 @@ namespace DeanCCCore.Core
             }
             else
             {
-                state = downloadable ? ImageState.Retry : ImageState.DownloadFailed;
+                state = downloadable ? ImageState.DownloadPause : ImageState.DownloadFailed;
             }
 
             if (Downloaded != null)
