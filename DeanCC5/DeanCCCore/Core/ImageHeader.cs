@@ -203,8 +203,15 @@ namespace DeanCCCore.Core
             ImageDownloadResult result = null;
             if (Common.ImageViewURLReplacer != null)
             {
-                ImageViewURLReplaceItem item = Common.ImageViewURLReplacer.Replace(originalUrl);
-                result = Download(item.ReplacedUrl, item.Referer, item.Cookie);
+                try
+                {
+                    ImageViewURLReplaceItem item = Common.ImageViewURLReplacer.Replace(originalUrl);
+                    result = Download(item.ReplacedUrl, item.Referer, item.Cookie);
+                }
+                catch (UriFormatException)
+                {
+                    result = Download(originalUrl);
+                }
             }
             else
             {

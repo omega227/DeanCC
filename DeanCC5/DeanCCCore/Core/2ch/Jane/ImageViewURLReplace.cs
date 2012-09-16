@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-using DeanCCCore.Core;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace DeanCCCore.Core._2ch.Jane
@@ -18,7 +16,7 @@ namespace DeanCCCore.Core._2ch.Jane
     public sealed class ImageViewURLReplace : IImageViewURLReplace
     {
         private static readonly Regex CommentPattern = new Regex(@"^(;|'|//)");
-        private static readonly Regex OptionRefererPattern = new Regex(@"([^=]+)(.+)?");
+        private static readonly Regex OptionRefererPattern = new Regex(@"(?<mode>[^=]+)(=(?<referer>.+))?");
         //private const string InvalidReferer = "$EXTRACT";
 
         public ImageViewURLReplace()
@@ -117,20 +115,20 @@ namespace DeanCCCore.Core._2ch.Jane
                         {
                             string option = elements.Length >= 4 ? elements[3] : string.Empty;
                             Match optionMatch = OptionRefererPattern.Match(option);
-                            string mode = optionMatch.Groups[1].Value;
+                            string mode = optionMatch.Groups["mode"].Value;
                             ImageViewUrlItem item = null;
                             if (mode == "$EXTRACT" &&
                                 Common.Options.BrowsersOptions.JaneOptions.EnableImageViewURLReplacedatOption)
                             {
                                 string extractPattern = elements[4];
-                                string optionRefefer = optionMatch.Groups[2].Value;
-                                item = new ImageViewUrlExtractItem(key, repl, refe, optionRefefer, extractPattern);
+                                string optionReferer = optionMatch.Groups["referer"].Value;
+                                item = new ImageViewUrlExtractItem(key, repl, refe, optionReferer, extractPattern);
                             }
                             else if (mode == "$COOKIE" &&
                                 Common.Options.BrowsersOptions.JaneOptions.EnableImageViewURLReplacedatOption)
                             {
-                                string optionRefefer = optionMatch.Groups[2].Value;
-                                item = new ImageViewUrlCookieItem(key, repl, refe, optionRefefer);
+                                string optionReferer = optionMatch.Groups["referer"].Value;
+                                item = new ImageViewUrlCookieItem(key, repl, refe, optionReferer);
                             }
                             else
                             {

@@ -9,6 +9,7 @@ namespace DeanCC.GUI.Options
         public ZipOptionsControl()
         {
             InitializeComponent();
+            smapleKeysComboBox.SelectedIndex = 0;
         }
 
         private static readonly string[] sampleKeywordFormats = { "%date=yyyyMMdd%", "%date=yyMMdd%", "%date=MMdd%", "%date=dd%", "%body=パス|ぱす|pass.*?([a-z0-9]+)%" };
@@ -62,9 +63,10 @@ namespace DeanCC.GUI.Options
 
         private void smapleKeysComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (smapleKeysComboBox.SelectedIndex >= 0)
+            int index = smapleKeysComboBox.SelectedIndex - 1;
+            if (index >= 0)
             {
-                keywordTextBox.Text = sampleKeywordFormats[smapleKeysComboBox.SelectedIndex];
+                keywordTextBox.Text = sampleKeywordFormats[index];
             }
         }
     }

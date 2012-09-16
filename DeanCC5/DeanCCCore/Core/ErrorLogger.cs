@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections;
 using System.IO;
-using System.Text.RegularExpressions;
-using DeanCCCore.Core.Options;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using DeanCCCore.Core.Options;
 
 namespace DeanCCCore.Core
 {
@@ -40,7 +39,7 @@ DeanCC {1}
         public static void Write(object error)
         {
             string log = error is AggregateException ?
-                ((System.AggregateException)error).InnerException.ToString() : error.ToString();
+                ((System.AggregateException)error).GetBaseException().ToString() : error.ToString();
             string changedOptions = GetChangedOptions();
             string formatedLog = string.Format(LogFormat, DateTime.Now, Common.VersionText, log, changedOptions);
             string text = File.Exists(SavePath) ? formatedLog : Discription + formatedLog;
@@ -83,10 +82,10 @@ DeanCC {1}
 
         private static void GetChangedOptionsInternal(PropertyInfo prop, object defaultObject, object currentObject, StringBuilder changedOptions)
         {
-            if (prop.CanRead &&
-                prop.PropertyType.Namespace == "DeanCCCore.Core.Options" &&
-                prop.ReflectedType.Namespace == "DeanCCCore.Core.Options" &&
-                !prop.IsSpecialName)
+            if (!prop.IsSpecialName &&
+                prop.CanRead &&
+                !prop.PropertyType.IsEnum &&
+                prop.PropertyType.Namespace == "DeanCCCore.Core.Options")
             {
                 prop.PropertyType.GetProperties().ToList().ForEach(nextProp =>
                     {
@@ -97,21 +96,17 @@ DeanCC {1}
                         GetChangedOptionsInternal(nextProp, nextDefaultObject, nextCurrentObject, changedOptions);
                     });
             }
-
-            //値プロパティに到達
-            if (defaultObject == null ||
-                prop.PropertyType != typeof(int) &&
-                prop.PropertyType != typeof(double) &&
-                prop.PropertyType != typeof(bool) &&
-                prop.PropertyType != typeof(Enum))
+            else if (prop.CanWrite &&
+                (prop.PropertyType.IsValueType || (currentObject is ICollection)) &&
+                prop.PropertyType != typeof(DateTime) &&
+                prop.PropertyType != typeof(char))
             {
-                return;
-            }
-
-            //有効な値を書き出し
-            if (!defaultObject.Equals(currentObject))
-            {
-                changedOptions.AppendFormat("{0}={1}\n", prop.Name, currentObject.ToString());
+                //有効な値を書き出し
+                if (!defaultObject.Equals(currentObject))
+                {
+                    changedOptions.AppendFormat("{0}={1}\r\n", prop.Name,
+                        (currentObject is ICollection) ? ((ICollection)currentObject).Count.ToString() : currentObject.ToString());
+                }
             }
         }
     }

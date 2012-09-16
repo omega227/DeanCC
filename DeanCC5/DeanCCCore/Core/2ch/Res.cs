@@ -71,6 +71,11 @@ namespace DeanCCCore.Core._2ch
         {
             //1つだけ本文に正規表現マッチをして置換する
             Match bodyFormatMatch = BodyFormatPattern.Match(target);
+            if (!bodyFormatMatch.Success)
+            {
+                return target;
+            }
+
             string bodyFormat = bodyFormatMatch.Groups[1].Value;             
             string bodyMatch = Regex.Match(Body, bodyFormat).Groups[1].Value;
             string replacedTarget = target.Replace(bodyFormatMatch.Value, bodyMatch);
@@ -82,6 +87,11 @@ namespace DeanCCCore.Core._2ch
         {
             //一つだけ日付フォーマットを置換する
             Match dateFormatMatch = DateFormatPattern.Match(target);
+            if (!dateFormatMatch.Success)
+            {
+                return target;
+            }
+
             string dateFormat = dateFormatMatch.Groups[1].Value;
             string dateString = Date.ToString(dateFormat);
             string replacedTarget = target.Replace(dateFormatMatch.Value, dateString);

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using DeanCCCore.Core._2ch.Jane;
 
 namespace DeanCCCore.Core
 {
@@ -22,6 +20,32 @@ namespace DeanCCCore.Core
             : base(sourceResIndex, url)
         {
         }
+
+        public override ImageDownloadResult Download()
+        {
+            ImageDownloadResult result = null;
+            if (Common.ImageViewURLReplacer != null)
+            {
+                try
+                {
+                    ImageViewURLReplaceItem item = Common.ImageViewURLReplacer.Replace(OriginalUrl);
+                    result = Download(item.ReplacedUrl, item.Referer, item.Cookie);
+                }
+                catch (UriFormatException)
+                {
+                    //imageview.datのuriの置換に失敗した時点でダウンロードしない
+                    result.Status = ImageDownloadResultStatus.InvalidUriFormat;
+                }
+            }
+            else
+            {
+                result = Download(OriginalUrl);
+            }
+
+            DownloadResult = result.Status;
+            return result;
+        }
+
 
         protected override void OnDownloading(ImageHeaderEventArgs e)
         {

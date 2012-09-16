@@ -61,6 +61,7 @@
             this.smapleKeysComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.smapleKeysComboBox.FormattingEnabled = true;
             this.smapleKeysComboBox.Items.AddRange(new object[] {
+            "サンプルキーワード選択",
             "日付8桁 (20000101)",
             "日付6桁 (000101)",
             "日付4桁 (0101)",
