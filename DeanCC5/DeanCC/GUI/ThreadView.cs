@@ -533,7 +533,7 @@ namespace DeanCC.GUI
             }
             else
             {
-                MessageBox.Show("ダウンロード完了後は画像情報を表示できません",
+                MessageBox.Show("表示できる画像情報がありませんでした。\nダウンロード完了後は画像情報を表示できません。",
                     "確認", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }

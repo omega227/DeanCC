@@ -26,6 +26,7 @@ namespace DeanCCCore.Core
         private const int md5HashLength = 32;
         public static readonly string SavePath = Path.Combine(Settings.SaveFolder, "ImageHashes");
         private static readonly string BackUpPath = SavePath + Settings.BackUpSuffix;
+        public static readonly object SyncRoot = new object();
 
         protected override void InsertItem(int index, ImageHash item)
         {

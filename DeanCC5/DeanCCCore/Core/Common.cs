@@ -697,8 +697,14 @@ namespace DeanCCCore.Core
             {
                 if (downloadedImageHashes == null)
                 {
-                    downloadedImageHashes = CreateHashes();
-                    OnCreatedDownloadedImageHashes();
+                    lock (ImageHashCollection.SyncRoot)
+                    {
+                        if (downloadedImageHashes == null)
+                        {
+                            downloadedImageHashes = CreateHashes();
+                            OnCreatedDownloadedImageHashes();
+                        }
+                    }
                 }
                 return downloadedImageHashes;
             }

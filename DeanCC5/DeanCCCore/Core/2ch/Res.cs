@@ -10,12 +10,20 @@ namespace DeanCCCore.Core._2ch
     public sealed class Res
     {
         private static readonly Regex ResPattern = new Regex(@"^(?<Name>.*)<>(?<Mail>.*)<>(?<Date>.*?)(ID:(?<ID>.*))?<>(?<Body>.*)<>.*$", RegexOptions.Multiline | RegexOptions.Compiled);
-        private static readonly string[] DateFormats = { "d" };
+        private static readonly Regex DateTimeFormatPattern = new Regex(@"(\d+)/(\d+)/(\d+)\D*((\d+):(\d+))?", RegexOptions.Compiled);
+        private static readonly string[] DateTimeFormats = { "yyyyMMddHHmm", "yyyyMMdd" };
         public const string IDFormat = "%id%";
         public const string MailFormat = "%mail%";
         public const string NameFormat = "%name%";
         private static readonly Regex BodyFormatPattern = new Regex("%body=(.+?)%", RegexOptions.IgnoreCase);
         private static readonly Regex DateFormatPattern = new Regex("%date=(.+?)%", RegexOptions.IgnoreCase);
+
+        public string Name { get; set; }
+        public DateTime Date { get; set; }
+        public string ID { get; set; }
+        public string Body { get; set; }
+        public string Mail { get; set; }
+        public string OriginalDat { get; private set; }
 
         public Res(string dat)
         {
@@ -27,7 +35,7 @@ namespace DeanCCCore.Core._2ch
             Match res = ResPattern.Match(dat);
             Name = res.Groups["Name"].Value;
             Mail = res.Groups["Mail"].Value;
-            DateTime date = TryParseDateTime(res.Groups["Date"].Value);
+            Date = TryParseDateTime(res.Groups["Date"].Value);
             ID = res.Groups["ID"].Value;
             Body = res.Groups["Body"].Value;
 
@@ -36,8 +44,11 @@ namespace DeanCCCore.Core._2ch
 
         private DateTime TryParseDateTime(string dateString)
         {
+            Match dateMatch = DateTimeFormatPattern.Match(dateString);
             DateTime date;
-            if (DateTime.TryParseExact(dateString, DateFormats, CultureInfo.CurrentCulture, DateTimeStyles.AllowWhiteSpaces, out date))
+            if (dateMatch.Success &&
+                DateTime.TryParseExact(dateMatch.Result("$1$2$3$5$6"),
+            DateTimeFormats, CultureInfo.CurrentCulture, DateTimeStyles.None, out date))
             {
                 return date;
             }
@@ -76,7 +87,7 @@ namespace DeanCCCore.Core._2ch
                 return target;
             }
 
-            string bodyFormat = bodyFormatMatch.Groups[1].Value;             
+            string bodyFormat = bodyFormatMatch.Groups[1].Value;
             string bodyMatch = Regex.Match(Body, bodyFormat).Groups[1].Value;
             string replacedTarget = target.Replace(bodyFormatMatch.Value, bodyMatch);
 
@@ -98,12 +109,5 @@ namespace DeanCCCore.Core._2ch
 
             return replacedTarget;
         }
-
-        public string Name { get; set; }
-        public DateTime Date { get; set; }
-        public string ID { get; set; }
-        public string Body { get; set; }
-        public string Mail { get; set; }
-        public string OriginalDat { get; private set; }
     }
 }
