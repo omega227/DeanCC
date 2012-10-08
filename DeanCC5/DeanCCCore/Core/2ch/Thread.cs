@@ -572,7 +572,7 @@ namespace DeanCCCore.Core._2ch
             {
                 e.Cancel = true;
             }
-            if (Settings.Crushed && !header.Repaired)
+            if (Common.CurrentSettings.Crushed && !header.Repaired)
             {
                 header.ClearStatus();
             }

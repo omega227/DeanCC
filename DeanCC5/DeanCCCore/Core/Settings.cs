@@ -101,13 +101,7 @@ namespace DeanCCCore.Core
         /// <summary>
         /// 正常に保存されていないかどうかを示す値
         /// </summary>
-        public static bool Crushed
-        {
-            get
-            {
-                return File.Exists(CrushMarkerPath);
-            }
-        }
+        public bool Crushed { get; private set; }
 
         private FormStatus formStatuses;
         /// <summary>
@@ -160,6 +154,7 @@ namespace DeanCCCore.Core
         /// </summary>
         public void MarkCrush()
         {
+            Crushed = File.Exists(CrushMarkerPath);
             //空ファイルを作成
             using (FileStream fs = new FileStream(CrushMarkerPath, FileMode.Create))
             {
