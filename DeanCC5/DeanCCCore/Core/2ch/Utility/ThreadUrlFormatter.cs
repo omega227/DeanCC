@@ -73,10 +73,9 @@ namespace DeanCCCore.Core._2ch.Utility
             {
                 return m;
             }
-            else//2chのURLでない
-            {
-                throw new ArgumentException("2ちゃんねるのURL以外の文字列が入力されました。");
-            }
+
+            //2chのURLでない
+            throw new ArgumentException("2ちゃんねるのURL以外の文字列が入力されました。");
         }
     }
 }

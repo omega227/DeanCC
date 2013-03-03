@@ -11,10 +11,18 @@ namespace DeanCCCore.Core
         public event EventHandler<System.ComponentModel.CancelEventArgs> Running;
         public event EventHandler Ran;
 
-        private ThreadCollection threads;
+        private readonly ThreadCollection threads;
+        private readonly Predicate<Thread> updateable;
         public ThreadUpdater(ThreadCollection threads)
+            : this(threads, thread => (thread.QuickDownloading & QuickDownloadState.Selected) != QuickDownloadState.Selected &&
+                !thread.Header.IsPastlog && !thread.Header.IsLimitOverThread)
+        {
+        }
+
+        public ThreadUpdater(ThreadCollection threads, Predicate<Thread> updateable)        
         {
             this.threads = threads;
+            this.updateable = updateable;
         }
 
         public void Run()
@@ -30,22 +38,23 @@ namespace DeanCCCore.Core
                 OnRan();
                 return;
             }
-
-            Thread[] copyThreads = new Thread[threads.Count];
-            threads.CopyTo(copyThreads, 0);
-            foreach (IThread thread in copyThreads)
+            
+            IEnumerable<Thread> updateThreads;
+            lock (Common.PatrolSyncRoot)
             {
-                if (!thread.Header.IsPastlog && !thread.Header.IsLimitOverThread)
+                updateThreads = threads.Where(thread => updateable(thread));
+            }
+            Thread[] copyUpdateThreads = updateThreads.ToArray();
+            foreach (Thread thread in copyUpdateThreads)
+            {
+                try
                 {
-                    try
-                    {
-                        thread.Update();
-                    }
-                    catch (System.Net.WebException ex)
-                    {
-                        Common.Logs.Add("通信エラー", ex.Message, LogStatus.Error);
-                        continue;
-                    }
+                    thread.Update();
+                }
+                catch (System.Net.WebException ex)
+                {
+                    Common.Logs.Add("通信エラー", ex.Message, LogStatus.Error);
+                    continue;
                 }
             }
             OnRan();

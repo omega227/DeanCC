@@ -34,6 +34,10 @@ namespace DeanCC.GUI
                 }
                 return currentPattern;
             }
+            set
+            {
+                currentPattern = value;
+            }
         }
         private BoardInfoCollection currentBoards;
 

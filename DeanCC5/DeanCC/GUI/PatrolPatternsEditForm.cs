@@ -131,6 +131,7 @@ namespace DeanCC.GUI
                 if (restartsTimer)
                 {
                     Common.PatrolTimer.Start();
+                    Common.QuickPatrolTimer.Start();
                 }
             }
             else if (DialogResult == System.Windows.Forms.DialogResult.Cancel)
@@ -152,6 +153,7 @@ namespace DeanCC.GUI
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Common.PatrolTimer.Start();
+                    Common.QuickPatrolTimer.Start();
                 }
             }
         }

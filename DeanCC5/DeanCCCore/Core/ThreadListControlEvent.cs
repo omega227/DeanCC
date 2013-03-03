@@ -16,6 +16,10 @@ namespace DeanCCCore.Core
         /// </summary>
         AllThread,
         /// <summary>
+        /// 高頻度ダウンロード対象のスレッド
+        /// </summary>
+        QuickDownloadingThread,
+        /// <summary>
         /// ダウンロード対象のスレッド
         /// </summary>
         DownloadingThread,
@@ -42,7 +46,7 @@ namespace DeanCCCore.Core
         /// <summary>
         /// 詳細情報
         /// </summary>
-        Information
+        Information,
     }
     public sealed class ThreadListEventArgs : EventArgs
     {

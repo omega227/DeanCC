@@ -13,6 +13,11 @@ namespace DeanCCCore.Core._2ch
         {
         }
 
+        public BoardInfoCollection(IList<IBoardInfo> list)
+            : base(list)
+        {
+        }
+
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder(0x10 * base.Count);

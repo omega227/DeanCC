@@ -19,11 +19,11 @@ namespace DeanCC.GUI
         /// 最新版のダウンロードを実行します。
         /// </summary>
         /// <returns>最新版のダウンロードが実行されて完了した場合はtrue,それ以外はfalse</returns>
-        public bool Run()
+        public bool Run(bool checkedNewVersion = false)
         {
             OnRunning();
 
-            bool newVersionChecked = (newVersionChecker.ShowDialog() == DialogResult.OK);
+            bool newVersionChecked = checkedNewVersion || (newVersionChecker.ShowDialog() == DialogResult.OK);
             if (newVersionChecked)
             {
                 if (existsNewVersion)

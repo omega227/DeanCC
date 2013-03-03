@@ -12,10 +12,16 @@ namespace DeanCCCore.Core
         public event EventHandler Ran;
 
         private readonly ThreadCollection threads;
-
+        private readonly Predicate<Thread> downloadable;
         public ImageDownloader(ThreadCollection threads)
+            : this(threads, thread => thread.Downloadable && (thread.QuickDownloading & QuickDownloadState.Selected) != QuickDownloadState.Selected)
         {
             this.threads = threads;
+        }
+        public ImageDownloader(ThreadCollection threads, Predicate<Thread> downloadable)
+        {
+            this.threads = threads;
+            this.downloadable = downloadable;
         }
 
         public void Run()
@@ -28,10 +34,11 @@ namespace DeanCCCore.Core
                 return;
             }
 
-            IEnumerable<Thread> downloadThreads = threads.Where(thread => thread.Downloadable);
+            IEnumerable<Thread> downloadThreads = threads.Where(thread => downloadable(thread));
+            Thread[] copyDownloadThreads = downloadThreads.ToArray();
             try
             {
-                Parallel.ForEach(downloadThreads, thread =>
+                Parallel.ForEach(copyDownloadThreads, thread =>
                     {
                         try
                         {

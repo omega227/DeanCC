@@ -35,8 +35,9 @@
             this.minimumCheckBox = new System.Windows.Forms.CheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.threadNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
             this.threadCheckBox = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.autoNewVersionCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.hashNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.threadNumericUpDown)).BeginInit();
             this.SuspendLayout();
@@ -124,15 +125,6 @@
             0,
             0});
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(14, 84);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(117, 12);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "スレッドの有効期限(日)";
-            // 
             // threadCheckBox
             // 
             this.threadCheckBox.AutoSize = true;
@@ -144,10 +136,31 @@
             this.toolTip.SetToolTip(this.threadCheckBox, "スレッドを指定した期間で削除します。\r\nまた、新規に取得する場合にも指定した期間をすでに過ぎているスレッドは取得しません。");
             this.threadCheckBox.UseVisualStyleBackColor = true;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(14, 84);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(117, 12);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "スレッドの有効期限(日)";
+            // 
+            // autoNewVersionCheckBox
+            // 
+            this.autoNewVersionCheckBox.AutoSize = true;
+            this.autoNewVersionCheckBox.Location = new System.Drawing.Point(3, 185);
+            this.autoNewVersionCheckBox.Name = "autoNewVersionCheckBox";
+            this.autoNewVersionCheckBox.Size = new System.Drawing.Size(157, 16);
+            this.autoNewVersionCheckBox.TabIndex = 7;
+            this.autoNewVersionCheckBox.Text = "自動的に最新版を確認する";
+            this.toolTip.SetToolTip(this.autoNewVersionCheckBox, "起動時と1日ごとに最新版を確認します。\r\n最新版が存在する場合のみ通知します。");
+            this.autoNewVersionCheckBox.UseVisualStyleBackColor = true;
+            // 
             // StartupOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.autoNewVersionCheckBox);
             this.Controls.Add(this.threadNumericUpDown);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.threadCheckBox);
@@ -174,5 +187,6 @@
         private System.Windows.Forms.NumericUpDown threadNumericUpDown;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox threadCheckBox;
+        private System.Windows.Forms.CheckBox autoNewVersionCheckBox;
     }
 }

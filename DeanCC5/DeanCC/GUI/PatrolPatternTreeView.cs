@@ -24,12 +24,24 @@ namespace DeanCC.GUI
         private System.ComponentModel.IContainer components;
         private ContextMenuStrip contextMenuStrip;
         private ToolStripMenuItem openFilderToolStripMenuItem;
+        private ToolStripMenuItem copyPatternToolStripMenuItem;
         public const int PatternLevel = 1;
 
         public PatrolPatternTreeView()
         {
             InitializeComponent();
             openFilderToolStripMenuItem.Click += new EventHandler(openFolderToolStripMenuItem_Click);
+            copyPatternToolStripMenuItem.Click += copyPatternToolStripMenuItem_Click;
+        }
+
+        void copyPatternToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedNode != null && SelectedNode.Level == PatternLevel)
+            {
+                PatrolPatternEditControl control = (PatrolPatternEditControl)SelectedNode.Tag;
+                PatrolPattern clonedPattern = (PatrolPattern)control.GetInitializedCurrentPattern((GenreFolder)SelectedNode.Parent.Tag).Clone();
+                AddPattern(SelectedNode.Parent, clonedPattern);
+            }
         }
 
         void openFolderToolStripMenuItem_Click(object sender, EventArgs e)
@@ -151,10 +163,34 @@ namespace DeanCC.GUI
             OnPatternNodeAdded(emptyNode);
         }
 
+        public void AddPattern(TreeNode parentNode, PatrolPattern pattern)
+        {
+            GenreFolder parentFolder = (GenreFolder)parentNode.Tag;
+            pattern.ParentFolder = parentFolder;
+            if (ContainsPatternKey(pattern.Name))
+            {
+                pattern.Name = Rename(pattern.Name);
+            }
+
+            PatrolPatternEditControl patternControl = new PatrolPatternEditControl(pattern);          
+            patternControl.PatternNameChanged +=
+                new EventHandler<PatrolPatternNameChangedEventArgs>(patternControl_PatternNameChanged);
+            TreeNode patternNode = new TreeNode(pattern.Name)
+            {
+                Tag = patternControl,
+                Name = pattern.Name,
+                ImageIndex = PatrolPatternsEditForm.PatternImageIndex,
+                SelectedImageIndex = PatrolPatternsEditForm.PatternImageIndex
+            };
+            parentNode.Nodes.Add(patternNode);
+            OnPatternNodeAdded(patternNode);
+        }
+
         private string Rename(string oldName)
         {
             if (ContainsPatternKey(oldName))
             {
+                string baseName = oldName;
                 for (int i = 1; ; i++)
                 {
                     string newName = string.Format(PatrolPattern.DefaultNameFormat, i);
@@ -315,6 +351,7 @@ namespace DeanCC.GUI
             this.patrolPatternImageList = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openFilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyPatternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -328,16 +365,25 @@ namespace DeanCC.GUI
             // contextMenuStrip
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openFilderToolStripMenuItem});
+            this.openFilderToolStripMenuItem,
+            this.copyPatternToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(101, 26);
+            this.contextMenuStrip.Size = new System.Drawing.Size(113, 48);
             this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
             // 
             // openFilderToolStripMenuItem
             // 
+            this.openFilderToolStripMenuItem.Image = global::DeanCC.Properties.Resources.folder_go;
             this.openFilderToolStripMenuItem.Name = "openFilderToolStripMenuItem";
-            this.openFilderToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.openFilderToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.openFilderToolStripMenuItem.Text = "開く";
+            // 
+            // copyPatternToolStripMenuItem
+            // 
+            this.copyPatternToolStripMenuItem.Image = global::DeanCC.Properties.Resources.page_copy1;
+            this.copyPatternToolStripMenuItem.Name = "copyPatternToolStripMenuItem";
+            this.copyPatternToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.copyPatternToolStripMenuItem.Text = "コピー";
             // 
             // PatrolPatternTreeView
             // 
@@ -360,6 +406,7 @@ namespace DeanCC.GUI
             }
 
             openFilderToolStripMenuItem.Enabled = (SelectedNode.Level == FolderLevel);
+            copyPatternToolStripMenuItem.Enabled = (SelectedNode.Level == PatternLevel);
         }
     }
 

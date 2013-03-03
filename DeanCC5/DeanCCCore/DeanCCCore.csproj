@@ -72,6 +72,7 @@
     <Compile Include="Core\2ch\Jane\ImageViewUrlItem.cs" />
     <Compile Include="Core\2ch\Jane\IReplaceStr.cs" />
     <Compile Include="Core\2ch\Jane\ReplaceStr.cs" />
+    <Compile Include="Core\2ch\QuickDownloadingThreadCollection.cs" />
     <Compile Include="Core\2ch\Res.cs" />
     <Compile Include="Core\2ch\SecureThreadCollection.cs" />
     <Compile Include="Core\2ch\ThreadCollection.cs" />
@@ -88,7 +89,7 @@
     <Compile Include="Core\2ch\Jane\NGFiles.cs" />
     <Compile Include="Core\2ch\Jane\ViewCache.cs" />
     <Compile Include="Core\2ch\ThreadEventArgs.cs" />
-    <Compile Include="Core\2ch\ThreadStateString.cs" />
+    <Compile Include="Core\2ch\Utility\ThreadStateString.cs" />
     <Compile Include="Core\ApplicationInformation.cs" />
     <Compile Include="Core\AxfcImageHeader.cs" />
     <Compile Include="Core\BindingCollection.cs" />
@@ -119,6 +120,8 @@
     <Compile Include="Core\Options\ZipOptionsItem.cs" />
     <Compile Include="Core\PatrolTimer.cs" />
     <Compile Include="Core\Proxy.cs" />
+    <Compile Include="Core\QuickDownloadState.cs" />
+    <Compile Include="Core\QuickPatrolMarker.cs" />
     <Compile Include="Core\ThreadListControlEvent.cs" />
     <Compile Include="Core\Uploader.cs" />
     <Compile Include="Core\Utility\FileNameFormat.cs" />
@@ -195,7 +198,9 @@
   <ItemGroup>
     <None Include="Memo.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="bbs.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

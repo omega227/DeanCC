@@ -35,7 +35,14 @@ namespace DeanCCCore.Core._2ch.Jane
             {
                 if (item.Pattern.IsMatch(url))
                 {
-                    return item.Replace(url);//どれかにマッチしたら置換を終了
+                    try
+                    {
+                        return item.Replace(url);//どれかにマッチしたら置換を終了
+                    }
+                    catch (ArgumentException)
+                    {
+                        return new ImageViewURLReplaceItem(url);
+                    }
                 }
             }
 

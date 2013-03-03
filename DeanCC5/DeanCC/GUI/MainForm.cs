@@ -37,6 +37,7 @@ namespace DeanCC.GUI
 
         private bool updatableThreadViewer;
         private bool isStartup;
+        private bool isUpdating;
         private bool closing;
         private IPCServer server = new IPCServer(PipeServerName);
         private ClipboardView clipboardViewer;
@@ -184,7 +185,10 @@ namespace DeanCC.GUI
 
         private void OnPatrolled(object sender, EventArgs e)
         {
-            mainStatusLabel.Text = PatrolledStatusText;
+            if (!Common.IsPatrolling && !Common.IsQuickPatrolling)
+            {
+                mainStatusLabel.Text = PatrolledStatusText;
+            }
             if (mainPanel.Controls.Count > 0)
             {
                 Control activeControl = mainPanel.Controls[0];
@@ -270,6 +274,11 @@ namespace DeanCC.GUI
             {
                 case SelectedThreadListMenu.AllThread:
                     ThreadViewer.ChangeSource(Common.EnableThreads);
+                    activeControl = ThreadViewer;
+                    break;
+
+                case SelectedThreadListMenu.QuickDownloadingThread:
+                    ThreadViewer.ChangeSource(Common.QuickDownloadingThreads);
                     activeControl = ThreadViewer;
                     break;
 
@@ -365,7 +374,7 @@ namespace DeanCC.GUI
                 return;
             }
             if (e.CloseReason == CloseReason.UserClosing &&
-                Common.IsPatrolling &&
+                Common.IsPatrolling || Common.IsQuickPatrolling &&
                 MessageBox.Show("巡回中です。巡回を中止してアプリケーションを終了しますか？",
                     "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) != DialogResult.OK)
             {
@@ -381,6 +390,7 @@ namespace DeanCC.GUI
             //System.Threading.Thread.Sleep(CloseInterval);
 
             Common.PatrolTimer.Stop();
+            Common.QuickPatrolTimer.Stop();
             Common.CancelPatrol();
             if (server != null)
             {
@@ -412,10 +422,13 @@ namespace DeanCC.GUI
             Common.ConnectionLimiter.Waiting += new EventHandler(ConnectionLimiter_Waiting);
             Common.ConnectionLimiter.Waited += new EventHandler(ConnectionLimiter_Waited);
             Common.Patrolling += new EventHandler<System.ComponentModel.CancelEventArgs>(Common_Patrolling);
+            Common.QuickPatrolling += new EventHandler<System.ComponentModel.CancelEventArgs>(Common_Patrolling);
             Common.Patrolled += new EventHandler(Common_Patrolled);
+            Common.QuickPatrolled += new EventHandler(Common_Patrolled);
             Common.Patroller.ThreadsChanged += new EventHandler<ThreadsChangedEventArgs>(Patroller_ThreadsChanged);
             Thread.ImagePassRequired += new EventHandler<ImagePassEventArgs>(Thread_ImagePassRequired);
             Thread.Downloading += new EventHandler<ImageDownloadEventArgs>(Thread_Downloading);
+            DeanCCCore.Core.VersionUp.VersionUpClient.CheckedNewVersion += VersionUpClient_CheckedNewVersion;
         }
 
         void Thread_Downloading(object sender, ImageDownloadEventArgs e)
@@ -499,6 +512,23 @@ namespace DeanCC.GUI
             Common.Patroller.ThreadsChanged -= new EventHandler<ThreadsChangedEventArgs>(Patroller_ThreadsChanged);
             Thread.ImagePassRequired -= new EventHandler<ImagePassEventArgs>(Thread_ImagePassRequired);
             Thread.Downloading -= new EventHandler<ImageDownloadEventArgs>(Thread_Downloading);
+            DeanCCCore.Core.VersionUp.VersionUpClient.CheckedNewVersion -= VersionUpClient_CheckedNewVersion;
+        }
+
+        void VersionUpClient_CheckedNewVersion(object sender, DeanCCCore.Core.VersionUp.VersionUpEventArgs e)
+        {
+            if (!isUpdating)
+            {
+                //自動アップデート確認
+                if (e.ExistsNewVersion)
+                {                    
+                    UpdateNewVersion(true);
+                }
+                else
+                {
+                    Common.Logs.Add("自動アップデート確認", "最新版です", LogStatus.System);
+                }
+            }
         }
 
         private void StoreStatus(FormStatus destination)
@@ -569,13 +599,22 @@ namespace DeanCC.GUI
 
         private void updateToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            UpdateNewVersion();
+        }
+
+        private void UpdateNewVersion(bool checkedNewVersion = false)
+        {
+            if (isUpdating) return;
+            isUpdating = true;
             NewVersionDownloadProcess downloader = new NewVersionDownloadProcess();
-            bool newVersionDownloaded = downloader.Run();
+            bool newVersionDownloaded = downloader.Run(checkedNewVersion);
             if (newVersionDownloaded)
             {
                 DeanCCCore.Core.VersionUp.VersionUpClient.RunUpdater();
+                OnFormClosing(new FormClosingEventArgs(CloseReason.ApplicationExitCall, false));
                 Application.Exit();
             }
+            isUpdating = false;
         }
 
         private void updateTimer_Tick(object sender, EventArgs e)
@@ -598,7 +637,9 @@ namespace DeanCC.GUI
                 }
             }
             //Text = Core.GetTitle();
-            timeStripStatusLabel.Text = Common.PatrolTimer.GetNextTimeText();
+            timeStripStatusLabel.Text = (threadListControl1.SelectedMenu == SelectedThreadListMenu.QuickDownloadingThread) ?
+                Common.QuickPatrolTimer.GetNextTimeText() :
+                Common.PatrolTimer.GetNextTimeText();
         }
 
         private void autoPatrolToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
@@ -607,10 +648,12 @@ namespace DeanCC.GUI
             if (autoPatrolling)
             {
                 Common.PatrolTimer.Start();
+                Common.QuickPatrolTimer.Start();
             }
             else
             {
                 Common.PatrolTimer.Stop();
+                Common.QuickPatrolTimer.Stop();
             }
         }
 
@@ -740,5 +783,37 @@ namespace DeanCC.GUI
         {
             Common.AddIndividualThreadAsync(e.Text);
         }
+
+        //private void allImportToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    ImportForm importer = new ImportForm();
+        //    importer.ShowDialog();
+        //}
+
+        //private void optionImportToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+
+        //}
+
+        //private void patrolPatternImportToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+
+        //}
+
+        //private void allExportToolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+        //    ExportForm exporter = new ExportForm();
+        //    exporter.ShowDialog();
+        //}
+
+        //private void optionExportToolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+
+        //}
+
+        //private void patrollPatternExportToolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+
+        //}
     }
 }

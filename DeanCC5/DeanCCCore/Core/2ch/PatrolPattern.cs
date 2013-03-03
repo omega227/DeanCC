@@ -14,7 +14,7 @@ namespace DeanCCCore.Core._2ch
     /// 巡回メソッドを実行するためにはInitialize()で初期化する必要があります
     /// </summary>
     [Serializable]
-    public class PatrolPattern : IPatrolPattern
+    public class PatrolPattern : IPatrolPattern, ICloneable
     {
         public const string DefaultNameFormat = "NoName{0}";
         [field: NonSerialized]
@@ -159,11 +159,11 @@ namespace DeanCCCore.Core._2ch
             //{
             //    throw new ArgumentException("板情報を空にできません。");
             //}
-            if (string.IsNullOrEmpty(pattern))
+            if (string.IsNullOrWhiteSpace(pattern))
             {
                 throw new ArgumentException("キーワードの項目を空にできません。");
             }
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("名前の項目を空にできません。");
             }
@@ -458,5 +458,18 @@ namespace DeanCCCore.Core._2ch
         //            Path.Combine(parentFolder.LocalPath, SubFolderFormat) : parentFolder.LocalPath;
         //    }
         //}
+
+        public object Clone()
+        {
+            object clonedPattern = MemberwiseClone();
+            BoardInfoCollection clonedBoards = new BoardInfoCollection();
+            foreach (BoardInfo board in TargetBoards)
+            {
+                clonedBoards.Add(board);
+            }
+            ((PatrolPattern)clonedPattern).TargetBoards = clonedBoards;
+
+            return clonedPattern;
+        }
     }
 }

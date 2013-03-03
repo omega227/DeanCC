@@ -11,14 +11,31 @@ namespace DeanCCCore.Core
         /// </summary>
         public PatrolTimer(TimerCallback callback)
         {
+            getPatrolTime = GetPatrolMilliSeconds;
             timer = new Timer(callback);
             Common.Patrolling += new EventHandler<System.ComponentModel.CancelEventArgs>(Common_Patrolling);
             Common.Patrolled += new EventHandler(Common_Patrolled);
         }
+        public PatrolTimer(Func<int> getPatrolTime, TimerCallback callback)
+        {
+            //高頻度用タイマーコンストラクタ
+            this.getPatrolTime = getPatrolTime;
+            timer = new Timer(callback);
+            Common.QuickPatrolling += new EventHandler<System.ComponentModel.CancelEventArgs>(Common_Patrolling);
+            Common.QuickPatrolled += new EventHandler(Common_Patrolled);
+        }
+
+        private DateTime startTime;
+        TimeSpan patrolSpan;
+        private Timer timer;
+        private bool running;
+        private bool isReentry;
+        private bool stopped;
+        private readonly Func<int> getPatrolTime;
 
         void Common_Patrolled(object sender, EventArgs e)
         {
-            running = false;            
+            running = false;
             if (isReentry)
             {
                 isReentry = false;
@@ -42,13 +59,6 @@ namespace DeanCCCore.Core
             }
         }
 
-        private DateTime startTime;
-        TimeSpan patrolSpan;
-        private Timer timer;
-        private bool running;
-        private bool isReentry;
-        private bool stopped;
-
         public string GetNextTimeText()
         {
             TimeSpan nextTime = GetNextTime();
@@ -62,14 +72,15 @@ namespace DeanCCCore.Core
                 return TimeSpan.Zero;
             }
             else
-            {                
+            {
                 TimeSpan nextTime = patrolSpan - (DateTime.Now - startTime);
                 return nextTime > TimeSpan.Zero ? nextTime : TimeSpan.Zero;
             }
         }
 
-        private int GetPatrolMilliSeconds(int hour)
+        private int GetPatrolMilliSeconds()
         {
+            int hour = DateTime.Now.Hour;
             if (4 <= hour && hour < 12)
             {
                 return 60 * 60 * 1000;
@@ -88,7 +99,7 @@ namespace DeanCCCore.Core
         {
             if (timer != null)
             {
-                int patrolMillSeconds = GetPatrolMilliSeconds(DateTime.Now.Hour);
+                int patrolMillSeconds = getPatrolTime();
                 patrolSpan = TimeSpan.FromMilliseconds((double)patrolMillSeconds);
                 timer.Change(dueTime, patrolMillSeconds);
             }

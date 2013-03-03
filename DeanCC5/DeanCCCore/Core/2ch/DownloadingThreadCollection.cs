@@ -16,9 +16,11 @@ namespace DeanCCCore.Core._2ch
         {
             get
             {
-                return thread =>
+                return (thread) =>
                     {
-                        return thread.Downloadable &&
+                        return
+                            (thread.QuickDownloading & QuickDownloadState.Selected) != QuickDownloadState.Selected &&
+                            thread.Downloadable &&
                             base.Applicable(thread);
                     };
             }

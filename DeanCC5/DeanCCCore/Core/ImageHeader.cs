@@ -242,10 +242,11 @@ namespace DeanCCCore.Core
                     OnDownloaded(e);
                     return new ImageDownloadResult(e.Status);
                 }
+
+                e.TriedDownload = true;
                 using (HttpWebResponse response = InternetClient.GetResponse(e.Url, referer, cookie))
                 {
                     e.ResponseHeader = response;
-                    e.TriedDownload = true;
                     OnResponseHeaderReceived(e);
                     if (e.Cancel)
                     {

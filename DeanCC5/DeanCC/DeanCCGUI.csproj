@@ -91,6 +91,12 @@
     <Compile Include="GUI\ErrorReport.Designer.cs">
       <DependentUpon>ErrorReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ExportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ExportForm.Designer.cs">
+      <DependentUpon>ExportForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\ImageHeaderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +105,12 @@
     </Compile>
     <Compile Include="GUI\ImageHeaderView.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GUI\ImportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ImportForm.Designer.cs">
+      <DependentUpon>ImportForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\InformationControl.cs">
       <SubType>UserControl</SubType>
@@ -305,8 +317,14 @@
       <DependentUpon>ErrorReport.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ExportForm.resx">
+      <DependentUpon>ExportForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\ImageHeaderForm.resx">
       <DependentUpon>ImageHeaderForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ImportForm.resx">
+      <DependentUpon>ImportForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\InformationControl.resx">
       <DependentUpon>InformationControl.cs</DependentUpon>
@@ -418,6 +436,8 @@
     <EmbeddedResource Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\xhtml_go.png" />
+    <None Include="Resources\xhtml_add.png" />
     <None Include="changelog.txt" />
     <Content Include="Resources\application_form.png" />
     <None Include="Resources\world_go1.png" />
@@ -426,12 +446,15 @@
     <None Include="Resources\application_go1.png" />
     <None Include="Resources\attach.png" />
     <None Include="Resources\application_lightning.png" />
+    <None Include="Resources\control_fastforward_blue.png" />
     <Content Include="Resources\cross.png" />
     <None Include="Resources\folder1.png" />
     <None Include="Resources\html1.png" />
     <None Include="Resources\cross1.png" />
+    <None Include="Resources\folder_go.png" />
     <Content Include="Resources\page_copy.png" />
     <None Include="Resources\page_copy1.png" />
+    <None Include="Resources\page_copy2.png" />
     <Content Include="Resources\page_go.png" />
     <None Include="Resources\page_go1.png" />
     <Content Include="Resources\page_lightning.png" />
@@ -439,6 +462,7 @@
     <Content Include="Resources\page_red.png" />
     <None Include="Resources\page_red1.png" />
     <None Include="Resources\pictures.png" />
+    <None Include="Resources\page_white_stack.png" />
     <Content Include="Resources\world_go.png" />
     <None Include="Resources\page_white_magnify.png" />
     <None Include="Resources\magnifier_zoom_in.png" />

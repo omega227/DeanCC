@@ -24,6 +24,7 @@ namespace DeanCC.GUI.Options
             destination.StartupOptions.ThreadLifeDate = (int)threadNumericUpDown.Value;
             destination.StartupOptions.RemoveExpirationImageHash = removeHashCheckBox.Checked;
             destination.StartupOptions.HashLifeDate = (int)hashNumericUpDown.Value;
+            destination.StartupOptions.AutoCheckNewVersion = autoNewVersionCheckBox.Checked;
         }
 
         public void Set(DeanCCCore.Core.Options.OptionItems source)
@@ -33,6 +34,7 @@ namespace DeanCC.GUI.Options
             threadNumericUpDown.Value = source.StartupOptions.ThreadLifeDate;
             removeHashCheckBox.Checked = source.StartupOptions.RemoveExpirationImageHash;
             hashNumericUpDown.Value = source.StartupOptions.HashLifeDate;
+            autoNewVersionCheckBox.Checked = source.StartupOptions.AutoCheckNewVersion;
             loaded = true;
         }
 

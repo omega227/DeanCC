@@ -46,6 +46,7 @@ namespace DeanCC.GUI
         private ToolStripMenuItem viewImagesToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator4;
         private ToolStripMenuItem userCommandsToolStripMenuItem;
+        private ToolStripMenuItem markQuickToolStripMenuItem;
 
         /// <summary>
         /// フィルターを解除するために指定するキーを表します
@@ -311,6 +312,7 @@ namespace DeanCC.GUI
             this.stopDownloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.redownloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.markQuickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.userCommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rowsContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -336,16 +338,17 @@ namespace DeanCC.GUI
             this.stopDownloadToolStripMenuItem,
             this.redownloadToolStripMenuItem,
             this.toolStripSeparator4,
+            this.markQuickToolStripMenuItem,
             this.userCommandsToolStripMenuItem});
             this.rowsContextMenuStrip.Name = "rowsContextMenuStrip";
-            this.rowsContextMenuStrip.Size = new System.Drawing.Size(173, 226);
+            this.rowsContextMenuStrip.Size = new System.Drawing.Size(209, 248);
             this.rowsContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.rowsContextMenuStrip_Opening);
             // 
             // openFolderToolStripMenuItem
             // 
             this.openFolderToolStripMenuItem.Image = global::DeanCC.Properties.Resources.folder;
             this.openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
-            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.openFolderToolStripMenuItem.Text = "フォルダーを開く";
             this.openFolderToolStripMenuItem.ToolTipText = "ダウンロードした画像のある保存フォルダーを開きます";
             this.openFolderToolStripMenuItem.Click += new System.EventHandler(this.openFolderToolStripMenuItem_Click);
@@ -358,7 +361,7 @@ namespace DeanCC.GUI
             this.janeToolStripMenuItem});
             this.openThreadToolStripMenuItem.Image = global::DeanCC.Properties.Resources.application_form;
             this.openThreadToolStripMenuItem.Name = "openThreadToolStripMenuItem";
-            this.openThreadToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.openThreadToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.openThreadToolStripMenuItem.Text = "ブラウザーで開く";
             // 
             // onlineToolStripMenuItem
@@ -392,7 +395,7 @@ namespace DeanCC.GUI
             // 
             this.viewImagesToolStripMenuItem.Image = global::DeanCC.Properties.Resources.pictures;
             this.viewImagesToolStripMenuItem.Name = "viewImagesToolStripMenuItem";
-            this.viewImagesToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.viewImagesToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.viewImagesToolStripMenuItem.Text = "画像情報を表示";
             this.viewImagesToolStripMenuItem.ToolTipText = "このスレッドの画像に関する詳細情報を表示します";
             this.viewImagesToolStripMenuItem.Click += new System.EventHandler(this.viewImagesToolStripMenuItem_Click);
@@ -400,7 +403,7 @@ namespace DeanCC.GUI
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(205, 6);
             // 
             // copyToolStripMenuItem
             // 
@@ -410,86 +413,95 @@ namespace DeanCC.GUI
             this.titleAndUrlToolStripMenuItem});
             this.copyToolStripMenuItem.Image = global::DeanCC.Properties.Resources.page_copy;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.copyToolStripMenuItem.Text = "コピー";
             // 
             // urlToolStripMenuItem
             // 
+            this.urlToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
             this.urlToolStripMenuItem.Name = "urlToolStripMenuItem";
             this.urlToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.urlToolStripMenuItem.Text = "URL";
-            this.urlToolStripMenuItem.Click += new System.EventHandler(this.urlToolStripMenuItem_Click);
             // 
             // titleToolStripMenuItem
             // 
+            this.titleToolStripMenuItem.Click += new System.EventHandler(this.titleToolStripMenuItem_Click);
             this.titleToolStripMenuItem.Name = "titleToolStripMenuItem";
             this.titleToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.titleToolStripMenuItem.Text = "タイトル";
-            this.titleToolStripMenuItem.Click += new System.EventHandler(this.titleToolStripMenuItem_Click);
             // 
             // titleAndUrlToolStripMenuItem
             // 
+            this.titleAndUrlToolStripMenuItem.Click += new System.EventHandler(this.titleAndUrlToolStripMenuItem_Click);
             this.titleAndUrlToolStripMenuItem.Name = "titleAndUrlToolStripMenuItem";
             this.titleAndUrlToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.titleAndUrlToolStripMenuItem.Text = "タイトルとURL";
-            this.titleAndUrlToolStripMenuItem.Click += new System.EventHandler(this.titleAndUrlToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(205, 6);
             // 
             // removeToolStripMenuItem
             // 
+            this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             this.removeToolStripMenuItem.Image = global::DeanCC.Properties.Resources.cross;
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.removeToolStripMenuItem.Text = "削除";
             this.removeToolStripMenuItem.ToolTipText = "このスレッドを除外します。\r\nすでに除外されている場合は、削除して自動取得可能にします。";
-            this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(205, 6);
             // 
             // startDownloadToolStripMenuItem
             // 
+            this.startDownloadToolStripMenuItem.Click += new System.EventHandler(this.startDownloadToolStripMenuItem_Click);
             this.startDownloadToolStripMenuItem.Image = global::DeanCC.Properties.Resources.page_go;
             this.startDownloadToolStripMenuItem.Name = "startDownloadToolStripMenuItem";
-            this.startDownloadToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.startDownloadToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.startDownloadToolStripMenuItem.Text = "ダウンロード開始";
             this.startDownloadToolStripMenuItem.ToolTipText = "画像ダウンロードを開始します。";
-            this.startDownloadToolStripMenuItem.Click += new System.EventHandler(this.startDownloadToolStripMenuItem_Click);
             // 
             // stopDownloadToolStripMenuItem
             // 
+            this.stopDownloadToolStripMenuItem.Click += new System.EventHandler(this.stopDownloadToolStripMenuItem_Click);
             this.stopDownloadToolStripMenuItem.Image = global::DeanCC.Properties.Resources.page_red;
             this.stopDownloadToolStripMenuItem.Name = "stopDownloadToolStripMenuItem";
-            this.stopDownloadToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.stopDownloadToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.stopDownloadToolStripMenuItem.Text = "ダウンロード中止";
             this.stopDownloadToolStripMenuItem.ToolTipText = "画像ダウンロードを中止します。\r\nこの操作が完了するまで時間がかかる場合もあります。";
-            this.stopDownloadToolStripMenuItem.Click += new System.EventHandler(this.stopDownloadToolStripMenuItem_Click);
             // 
             // redownloadToolStripMenuItem
             // 
+            this.redownloadToolStripMenuItem.Click += new System.EventHandler(this.redownloadToolStripMenuItem_Click);
             this.redownloadToolStripMenuItem.Image = global::DeanCC.Properties.Resources.page_lightning;
             this.redownloadToolStripMenuItem.Name = "redownloadToolStripMenuItem";
-            this.redownloadToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.redownloadToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.redownloadToolStripMenuItem.Text = "強制ダウンロード";
             this.redownloadToolStripMenuItem.ToolTipText = "既にダウンロードに失敗した画像を再ダウンロードします。";
-            this.redownloadToolStripMenuItem.Click += new System.EventHandler(this.redownloadToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(205, 6);
+            // 
+            // markQuickToolStripMenuItem
+            // 
+            this.markQuickToolStripMenuItem.Click += markQuickToolStripMenuItem_Click;
+            this.markQuickToolStripMenuItem.Image = global::DeanCC.Properties.Resources.control_fastforward_blue;
+            this.markQuickToolStripMenuItem.Name = "markQuickToolStripMenuItem";
+            this.markQuickToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.markQuickToolStripMenuItem.Text = "高速ダウンロードへ追加";
+            this.markQuickToolStripMenuItem.ToolTipText = "通常よりも高頻度でダウンロードする対象にします。";
             // 
             // userCommandsToolStripMenuItem
             // 
             this.userCommandsToolStripMenuItem.Image = global::DeanCC.Properties.Resources.application_lightning;
             this.userCommandsToolStripMenuItem.Name = "userCommandsToolStripMenuItem";
-            this.userCommandsToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.userCommandsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.userCommandsToolStripMenuItem.Text = "コマンド";
             this.userCommandsToolStripMenuItem.ToolTipText = "オプションで設定できるコマンドです";
             // 
@@ -506,6 +518,22 @@ namespace DeanCC.GUI
 
 
         #endregion
+
+
+        void markQuickToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int manualCount = Common.QuickDownloadingThreads.Count(thread => (thread.QuickDownloading & QuickDownloadState.Manual) == QuickDownloadState.Manual);
+            if (SelectedRows.Count + manualCount > QuickPatrolMarker.Limit)
+            {
+                MessageBox.Show("追加できる数の制限を超えています", "DeanCC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            ForEachSelectedThreads(thread =>
+                {
+                    thread.QuickDownloading = QuickDownloadState.Selected | QuickDownloadState.Manual;
+                });
+        }
 
         void viewImagesToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -751,7 +779,7 @@ namespace DeanCC.GUI
             MessageBox.Show("コマンド:" + Common.Options.ThreadViewOptions.DoubleClickPerformItemName +
                 "が見つかりませんでした。\n再度オプションから設定しなおしてください。",
                 "コマンド実行エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }        
+        }
 
         private void rowsContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -766,7 +794,7 @@ namespace DeanCC.GUI
             janeToolStripMenuItem.Enabled = File.Exists(Common.Options.BrowsersOptions.JaneOptions.JanePath);
             removeToolStripMenuItem.Enabled = !Common.IsPatrolling;
             redownloadToolStripMenuItem.Enabled = startDownloadToolStripMenuItem.Enabled =
-                (CurrentThreads is DownloadingThreadCollection && !Common.IsPatrolling);
+                (CurrentThreads is DownloadingThreadCollection && !Common.IsPatrolling || CurrentThreads is QuickDownloadingThreadCollection && !Common.IsQuickPatrolling);
         }
     }
 }

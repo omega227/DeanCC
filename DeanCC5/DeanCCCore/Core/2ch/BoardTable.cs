@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using System.Net;
 using DeanCCCore.Core.Utility;
 using DeanCCCore.Core._2ch.Utility;
+using System.Xml;
+using System.IO;
 
 namespace DeanCCCore.Core._2ch
 {
@@ -13,6 +15,8 @@ namespace DeanCCCore.Core._2ch
     public sealed class BoardTable : CategoryCollection, IBoardTable
     {
         private static readonly HttpStatusCode[] ContinueStatuses = { HttpStatusCode.ServiceUnavailable, HttpStatusCode.RequestTimeout };
+        private static readonly Regex CategoryNamePattern = new Regex("<br><b>(?<category>.+?)</b><br>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex BoardPattern = new Regex(@"<a href=(?<url>[^\s>]+).*?>(?<subject>.+?)</a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         [field: NonSerialized]
         public event EventHandler<BoardTableUpdateEventArgs> OnlineUpdated;
@@ -34,9 +38,9 @@ namespace DeanCCCore.Core._2ch
             {
                 throw new ArgumentNullException("table");
             }
-            foreach (ICategory category in this)
+            foreach (ICategory category in table)
             {
-                this.Add(category);
+                Add(category);
             }
         }
 
@@ -178,44 +182,34 @@ namespace DeanCCCore.Core._2ch
                 }
 
                 e.LastModified = result.LastModified;
-                string str = result.Data;
-                string[] strArray = Regex.Split(Regex.Replace(str, "<br><b>", "\r\n<br><b>", RegexOptions.IgnoreCase), "\r\n|\r|\n");
-                Regex regex = new Regex("<br><b>(?<category>.+?)</b><br>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                Regex regex2 = new Regex(@"<a href=(?<url>[^\s>]+).*?>(?<subj>.+?)</a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                int index = 0;
                 CategoryCollection categories = new CategoryCollection();
-                while (index < strArray.Length)
+                string[] maybeCategoryTexts = Regex.Split(result.Data, @"^\s*${3,}?", RegexOptions.Multiline);
+                foreach (string maybeCategoryText in maybeCategoryTexts)
                 {
-                    Match match = regex.Match(strArray[index++]);
-                    if (match.Success)
+                    Match categoryName = CategoryNamePattern.Match(maybeCategoryText);
+                    if (!categoryName.Success)
                     {
-                        Category item = new Category(match.Groups["category"].Value);
-                        while (index < strArray.Length)
+                        continue;
+                    }
+
+                    Category item = new Category(categoryName.Groups["category"].Value);
+                    foreach (Match boardMatch in BoardPattern.Matches(maybeCategoryText))
+                    {
+                        BoardInfo info = ThreadUtility.ParseBoardInfo(boardMatch.Groups["url"].Value, item.Name);
+                        if (info != null)
                         {
-                            if (strArray[index] == string.Empty)
+                            info.Name = boardMatch.Groups["subject"].Value;
+                            item.Children.Add(info);
+                            IBoardInfo oldInfo = FindFromName(info.Name, info.DomainPath);
+                            if (oldInfo != null)
                             {
-                                break;
-                            }
-                            Match match2 = regex2.Match(strArray[index++]);
-                            if (match2.Success)
-                            {
-                                BoardInfo info = ThreadUtility.ParseBoardInfo(match2.Groups["url"].Value, item.Name);
-                                if (info != null)
-                                {
-                                    info.Name = match2.Groups["subj"].Value;
-                                    item.Children.Add(info);
-                                    IBoardInfo oldInfo = FindFromName(info.Name, info.DomainPath);
-                                    if (oldInfo != null)
-                                    {
-                                        Replace(oldInfo, info);
-                                    }
-                                }
+                                Replace(oldInfo, info);
                             }
                         }
-                        if (item.Children.Count > 0)
-                        {
-                            categories.Add(item);
-                        }
+                    }
+                    if (item.Children.Count > 0)
+                    {
+                        categories.Add(item);
                     }
                 }
 
@@ -251,6 +245,36 @@ namespace DeanCCCore.Core._2ch
             }
 
             OnOnlineUpdated(e);
+        }
+
+        public void LoadBoardFromXml()
+        {
+            XmlDocument bbsMenu = new XmlDocument();
+            using (Stream xmlStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("DeanCCCore.bbs.xml"))
+            {
+                bbsMenu.Load(xmlStream);
+            }
+            foreach (XmlElement categoryElement in bbsMenu.GetElementsByTagName("category"))
+            {
+                Category item = new Category(categoryElement.GetAttribute("title"));
+                foreach (XmlElement boardElement in categoryElement.ChildNodes)
+                {
+                    BoardInfo info = ThreadUtility.ParseBoardInfo(boardElement.GetAttribute("url"), item.Name);
+                    if (info != null)
+                    {
+                        info.Name = boardElement.GetAttribute("title");
+                        item.Children.Add(info);
+                        IBoardInfo oldInfo = FindFromName(info.Name, info.DomainPath);
+                        if (oldInfo != null)
+                        {
+                            Replace(oldInfo, info);
+                        }
+                    }
+                }
+                Add(item);
+            }
+            lastModified = DateTime.Parse(bbsMenu.GetElementsByTagName("bbsmenu")[0].Attributes["lastup"].Value);
+            updateCompleted = true;
         }
 
         public void OnOnlineUpdated(BoardTableUpdateEventArgs e)

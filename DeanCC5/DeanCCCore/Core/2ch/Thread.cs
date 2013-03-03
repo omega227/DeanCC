@@ -146,6 +146,24 @@ namespace DeanCCCore.Core._2ch
             }
         }
 
+        private QuickDownloadState quickDownloading;
+        /// <summary>
+        /// 高頻度ダウンロード中かどうかを示します
+        /// </summary>
+        [Browsable(false)]
+        public QuickDownloadState QuickDownloading
+        {
+            get
+            {
+                return quickDownloading;
+            }
+            set
+            {
+                quickDownloading = value;
+            }
+        }
+        
+
         private ImageHeaderCollection imageHeaders = new ImageHeaderCollection();
         [Browsable(false)]
         public ImageHeaderCollection ImageHeaders
@@ -851,6 +869,11 @@ namespace DeanCCCore.Core._2ch
         public DateTime LastImageModified
         {
             get { return lastImageModified; }
+        }
+        [DisplayName("高速ダウンロード")]
+        public string QuickDownload
+        {
+            get { return ThreadStateString.GetQuickDownloadStateText(quickDownloading); }
         }
         [DisplayName("板")]
         public string SourceBoardName

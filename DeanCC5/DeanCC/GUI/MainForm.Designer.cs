@@ -412,7 +412,7 @@
             // 
             this.mainStatusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.mainStatusLabel.Name = "mainStatusLabel";
-            this.mainStatusLabel.Size = new System.Drawing.Size(626, 17);
+            this.mainStatusLabel.Size = new System.Drawing.Size(657, 17);
             this.mainStatusLabel.Spring = true;
             this.mainStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace DeanCCCore.Core.Options
 {
@@ -12,6 +13,9 @@ namespace DeanCCCore.Core.Options
         public static readonly string BackUpSavePath = SavePath + Settings.BackUpSuffix;
         [field: NonSerialized]
         public event EventHandler ItemsChanged;
+        private const string XmlFileName = "UserOptions.xml";
+        public static readonly string ImportXmlFolder = Path.Combine(Settings.SaveFolder, "Import");
+        public static readonly string ImportXmlPath = Path.Combine(ImportXmlFolder, XmlFileName);
 
         /// <summary>
         /// 逆シリアル化の直後に発生します。このメソッドはvirtualにできません
@@ -102,6 +106,7 @@ namespace DeanCCCore.Core.Options
         /// <summary>
         /// 個別追加スレッドオプション
         /// </summary>
+        [XmlIgnore]
         public IndividualThreadOptionsItem IndividualThreadOptions { get; set; }
         /// <summary>
         /// 通知オプション
@@ -124,6 +129,7 @@ namespace DeanCCCore.Core.Options
         {
             Save(SavePath);
         }
+
         /// <summary>
         /// 現在のインスタンスをバックアップとして保存します
         /// </summary>
@@ -172,6 +178,55 @@ namespace DeanCCCore.Core.Options
                 bin.Serialize(fs, this);
             }
         }
+
+        /// <summary>
+        /// オプションの内容をすべてXMLとして保存します
+        /// </summary>
+        /// <param name="path">保存先のパス</param>
+        public void SaveAsXml(string path)
+        {
+            XmlSerializer xml = new XmlSerializer(typeof(OptionItems));
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                xml.Serialize(fs, this);
+            }
+        }
+
+        /// <summary>
+        /// 既定のパスにあるXMLファイルからインスタンスを取得します        
+        /// </summary>
+        /// <remarks>XMLファイルがない場合はnullを返します</remarks>
+        /// <returns></returns>
+        public static OptionItems Import()
+        {
+            if (!File.Exists(ImportXmlPath))
+            {
+                return null;
+            }
+
+            OptionItems importedOptions = CreateFromXml(ImportXmlPath);
+            OptionItems beforOptions = Create();
+            importedOptions.IndividualThreadOptions = beforOptions.IndividualThreadOptions;//XmlIgnoreなプロパティを設定
+
+            Directory.Delete(ImportXmlFolder, true);
+
+            return importedOptions;
+        }
+
+        /// <summary>
+        /// XMLのパスを指定してインスタンスを取得します
+        /// </summary>
+        /// <param name="path">XMLのパス</param>
+        /// <returns>作成したインスタンス</returns>
+        public static OptionItems CreateFromXml(string path)
+        {
+            XmlSerializer xml = new XmlSerializer(typeof(OptionItems));
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return (OptionItems)xml.Deserialize(fs);
+            }
+        }
+
         private static object Deserialize(string path)
         {
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))

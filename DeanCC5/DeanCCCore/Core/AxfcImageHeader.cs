@@ -62,7 +62,16 @@ namespace DeanCCCore.Core
                 if (!Regex.IsMatch(cushionPage.Data, @"name=""keyword"""))
                 {
                     //パスなし
-                    downloadUrl = GetDownloadUrl(cushionPage.Data, new Uri(e.Url));
+                    try
+                    {
+                        downloadUrl = GetDownloadUrl(cushionPage.Data, new Uri(e.Url));
+                    }
+                    catch (System.Net.ProtocolViolationException)
+                    {
+                        e.Status = ImageDownloadResultStatus.Failed;
+                        e.Cancel = true;
+                        return;
+                    }
                 }
                 else
                 {

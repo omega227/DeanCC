@@ -11,6 +11,10 @@ namespace DeanCCCore.Core
     [Serializable]
     public sealed class Command
     {
+        public Command()
+        {
+        }
+
         public Command(string name, string value, CommandMode commandMode)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -95,5 +99,8 @@ namespace DeanCCCore.Core
     [Serializable]
     public sealed class CommandCollection : System.Collections.ObjectModel.Collection<Command>
     {
+        public CommandCollection()
+        {
+        }
     }
 }

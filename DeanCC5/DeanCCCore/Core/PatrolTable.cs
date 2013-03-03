@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using DeanCCCore.Core._2ch;
+using System.Xml.Serialization;
 
 namespace DeanCCCore.Core
 {
@@ -11,6 +12,9 @@ namespace DeanCCCore.Core
         public static readonly string SavePath = Path.Combine(Settings.SaveFolder, "PatrolPatterns");
         public static readonly string BackUpSavePath = SavePath + Settings.BackUpSuffix;
         public event EventHandler Changed;
+        private const string XmlFileName = "PatrolPatterns.xml";
+        public static readonly string ImportXmlFolder = Path.Combine(Settings.SaveFolder, "Import");
+        public static readonly string ImportXmlPath = Path.Combine(ImportXmlFolder, XmlFileName);
 
         public PatrolTable()
         {
@@ -111,6 +115,54 @@ namespace DeanCCCore.Core
                 bin.Serialize(fs, this);
             }
         }
+
+        /// <summary>
+        /// オプションの内容をすべてXMLとして保存します
+        /// </summary>
+        /// <param name="path">保存先のパス</param>
+        public void SaveAsXml(string path)
+        {
+            XmlSerializer xml = new XmlSerializer(typeof(PatrolTable));
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                xml.Serialize(fs, this);
+            }
+        }
+
+        /// <summary>
+        /// 既定のパスにあるXMLファイルからインスタンスを取得します        
+        /// </summary>
+        /// <remarks>XMLファイルがない場合はnullを返します</remarks>
+        /// <returns></returns>
+        public static PatrolTable Import()
+        {
+            if (!File.Exists(ImportXmlPath))
+            {
+                return null;
+            }
+
+            PatrolTable importedPatrols = CreateFromXml(ImportXmlPath);
+
+            Directory.Delete(ImportXmlFolder, true);
+
+            return importedPatrols;
+        }
+
+        /// <summary>
+        /// XMLのパスを指定してインスタンスを取得します
+        /// </summary>
+        /// <param name="path">XMLのパス</param>
+        /// <returns>作成したインスタンス</returns>
+        public static PatrolTable CreateFromXml(string path)
+        {
+            XmlSerializer xml = new XmlSerializer(typeof(PatrolTable));
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return (PatrolTable)xml.Deserialize(fs);
+            }
+        }
+
+
         private static object Deserialize(string path)
         {
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))

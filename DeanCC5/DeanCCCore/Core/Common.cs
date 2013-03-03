@@ -92,6 +92,18 @@ namespace DeanCCCore.Core
             }
         }
 
+        private static QuickDownloadingThreadCollection quickDownloadingThreads = new QuickDownloadingThreadCollection();
+        /// <summary>
+        /// 高頻度ダウンロード中スレッドリスト
+        /// </summary>
+        public static QuickDownloadingThreadCollection QuickDownloadingThreads
+        {
+            get
+            {
+                return quickDownloadingThreads;
+            }
+        }
+
         private static DownloadingThreadCollection downloadingThreads = new DownloadingThreadCollection();
         /// <summary>
         /// ダウンロード中スレッドリスト
@@ -363,11 +375,17 @@ namespace DeanCCCore.Core
             {
                 try
                 {
-                    Common.CurrentSettings.Boards.OnlineUpdate();
+                    currentSettings.Boards.OnlineUpdate();
+                }
+                catch (ApplicationException ex)
+                {
+                    currentSettings.Boards.LoadBoardFromXml();
+                    logs.Add("板一覧更新", ex.Message + " デフォルトの板一覧を読み込みます。", LogStatus.Error);
                 }
                 catch (System.Net.WebException ex)
                 {
-                    logs.Add("通信エラー", ex.Message, LogStatus.Error);
+                    currentSettings.Boards.LoadBoardFromXml();
+                    logs.Add("通信エラー", ex.Message + " デフォルトの板一覧を読み込みます。", LogStatus.Error);
                 }
             }
 
@@ -429,6 +447,12 @@ namespace DeanCCCore.Core
                     }
                 }
             }
+            //定期アップデートチェック
+            if (Options.StartupOptions.AutoCheckNewVersion)
+            {
+                newVersionCheckTimer =
+                    new System.Threading.Timer((state) => { VersionUp.VersionUpClient.CheckNewVersion(); }, null, 0, 24 * 60 * 60 * 1000);
+            }
         }
 
         static void Options_ItemsChanged(object sender, EventArgs e)
@@ -469,6 +493,11 @@ namespace DeanCCCore.Core
             {
                 patrolTimer.Dispose();
                 patrolTimer = null;
+            }
+            if (newVersionCheckTimer != null)
+            {
+                newVersionCheckTimer.Dispose();
+                newVersionCheckTimer = null;
             }
             //if (networkCounter != null)
             //{
@@ -588,7 +617,7 @@ namespace DeanCCCore.Core
             //}
             try
             {
-                options = OptionItems.Create();
+                options = OptionItems.Create();//OptionItems.Import() ?? OptionItems.Create();
             }
             catch (SerializationException ex)
             {
@@ -618,7 +647,7 @@ namespace DeanCCCore.Core
             //}
             try
             {
-                patterns = PatrolTable.Create();
+                patterns = PatrolTable.Create();//PatrolTable.Import() ?? PatrolTable.Create();
             }
             catch (SerializationException ex)
             {
@@ -718,7 +747,18 @@ namespace DeanCCCore.Core
         {
             get
             {
-                return isPatrolling;
+                return isPatrolling || IsQuickPatrolling;
+            }
+        }
+        private static bool isQuickPatrolling;
+        /// <summary>
+        /// 定期巡回実行中であるかを示します
+        /// </summary>
+        public static bool IsQuickPatrolling
+        {
+            get
+            {
+                return isQuickPatrolling;
             }
         }
 
@@ -732,6 +772,11 @@ namespace DeanCCCore.Core
                 Patroller.Stop();
                 Updater.Stop();
                 Downloader.Stop();
+            }
+            if (isQuickPatrolling)
+            {                
+                QuickUpdater.Stop();
+                QuickDownloader.Stop();
             }
         }
 
@@ -764,6 +809,15 @@ namespace DeanCCCore.Core
             }
         }
 
+        private static object patrolSyncRoot = new object();
+        /// <summary>
+        /// 巡回動作を同期するために使用できるオブジェクトを取得します
+        /// </summary>
+        public static object PatrolSyncRoot
+        {
+            get { return patrolSyncRoot; }
+        }
+
         /// <summary>
         /// 指定したメソッドをメインフォームで実行します
         /// </summary>
@@ -776,6 +830,8 @@ namespace DeanCCCore.Core
             }
             mainForm.Invoke(method, args);
         }
+
+        private static System.Threading.Timer newVersionCheckTimer;
 
         private static ThreadPatroller patroller;
         /// <summary>
@@ -794,6 +850,23 @@ namespace DeanCCCore.Core
                 return patroller;
             }
         }
+
+        private static QuickPatrolMarker quickPatrolMarker;
+        /// <summary>
+        /// 高頻度ダウンロードの対象自動選択機能を提供します
+        /// </summary>
+        public static QuickPatrolMarker QuickPatrolMarker
+        {
+            get
+            {
+                if (quickPatrolMarker == null)
+                {
+                    quickPatrolMarker = new QuickPatrolMarker(currentSettings.AllThreads);
+                }
+                return quickPatrolMarker;
+            }
+        }
+
         private static ThreadUpdater updater;
         /// <summary>
         /// スレッドのレス更新機能を提供します
@@ -809,6 +882,27 @@ namespace DeanCCCore.Core
                     updater.Ran += new EventHandler(updater_Ran);
                 }
                 return updater;
+            }
+        }
+        private static ThreadUpdater quickUpdater;
+        /// <summary>
+        /// 高頻度ダウンロード用スレッドのレス更新機能を提供します
+        /// </summary>
+        public static ThreadUpdater QuickUpdater
+        {
+            get
+            {
+                if (quickUpdater == null)
+                {
+                    quickUpdater = new ThreadUpdater(currentSettings.AllThreads, thread =>
+                    {
+                        return (thread.QuickDownloading & QuickDownloadState.Selected) == QuickDownloadState.Selected &&
+                            !thread.Header.IsPastlog && !thread.Header.IsLimitOverThread;
+                    });
+                    quickUpdater.Running += new EventHandler<System.ComponentModel.CancelEventArgs>(updater_Running);
+                    quickUpdater.Ran += new EventHandler(updater_Ran);
+                }
+                return quickUpdater;
             }
         }
 
@@ -829,6 +923,27 @@ namespace DeanCCCore.Core
                 return downloader;
             }
         }
+        private static ImageDownloader quickDownloader;
+        /// <summary>
+        /// 高頻度画像ダウンロード機能を提供します
+        /// </summary>
+        public static ImageDownloader QuickDownloader
+        {
+            get
+            {
+                if (quickDownloader == null)
+                {
+                    quickDownloader = new ImageDownloader(currentSettings.AllThreads, thread =>
+                    {
+                        return (thread.QuickDownloading & QuickDownloadState.Selected) == QuickDownloadState.Selected && thread.Downloadable;
+                    });
+                    quickDownloader.Running += new EventHandler<System.ComponentModel.CancelEventArgs>(downloader_Running);
+                    quickDownloader.Ran += new EventHandler(downloader_Ran);
+                }
+                return quickDownloader;
+            }
+        }
+
 
         /// <summary>
         /// スレッド取得・ダウンロードの開始直前に発生します
@@ -849,48 +964,67 @@ namespace DeanCCCore.Core
             {
                 return;
             }
-
-            Patroller.Run();
-            Updater.Run();
-            //try
-            //{
+            lock (patrolSyncRoot)
+            {
+                Patroller.Run();
+                Updater.Run();
+            }
             Downloader.Run();
-            //}
-            //catch (IOException ex)
-            //{
-            //    logs.Add("保存エラー", ex.Message, LogStatus.Error);
-            //    MessageBox.Show(ex.Message + "\nダウンロードを中断しました。", "保存失敗",
-            //        MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-            //catch (System.Net.WebException ex)
-            //{
-            //    logs.Add("通信エラー", ex.Message, LogStatus.Error);
-            //    MessageBox.Show(ex.Message + "\nダウンロードを中断しました。", "ダウンロード失敗",
-            //        MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
 
             OnPatrolled();
         }
 
+        /// <summary>
+        /// スレッド取得・ダウンロードの開始直前に発生します
+        /// </summary>
+        public static event EventHandler<System.ComponentModel.CancelEventArgs> QuickPatrolling;
+        /// <summary>
+        /// スレッド取得・ダウンロードの完了後に発生します
+        /// </summary>
+        public static event EventHandler QuickPatrolled;
+        private static void QuickPatrol()
+        {
+            System.ComponentModel.CancelEventArgs e = new System.ComponentModel.CancelEventArgs();
+            OnQuickPatrolling(e);
+            if (e.Cancel)
+            {
+                return;
+            }
+            lock (patrolSyncRoot)
+            {
+                QuickPatrolMarker.Run();
+                QuickUpdater.Run();
+            }
+            QuickDownloader.Run();
+
+            OnQuickPatrolled();
+        }
+
         static void downloader_Ran(object sender, EventArgs e)
         {
-            InvokeUpdateThreads();
+            lock (patrolSyncRoot)
+            {
+                InvokeUpdateThreads();
+            }
         }
 
         static void downloader_Running(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (imageViewURLRepalcer != null && !imageViewURLRepalcer.Loaded)
+            lock (patrolSyncRoot)
             {
-                imageViewURLRepalcer.Load();
-            }
-            //if (downloadedImageHashes == null)
-            //{
-            //    downloadedImageHashes = CreateHashes();
-            //    OnCreatedDownloadedImageHashes();
-            //}
-            if (ngFiles != null && !ngFiles.Loaded)
-            {
-                ngFiles.Load();
+                if (imageViewURLRepalcer != null && !imageViewURLRepalcer.Loaded)
+                {
+                    imageViewURLRepalcer.Load();
+                }
+                //if (downloadedImageHashes == null)
+                //{
+                //    downloadedImageHashes = CreateHashes();
+                //    OnCreatedDownloadedImageHashes();
+                //}
+                if (ngFiles != null && !ngFiles.Loaded)
+                {
+                    ngFiles.Load();
+                }
             }
         }
 
@@ -916,15 +1050,21 @@ namespace DeanCCCore.Core
 
         static void updater_Running(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (replaceStr != null && !replaceStr.Loaded)
+            lock (patrolSyncRoot)
             {
-                replaceStr.Load();
+                if (replaceStr != null && !replaceStr.Loaded)
+                {
+                    replaceStr.Load();
+                }
             }
         }
 
         static void updater_Ran(object sender, EventArgs e)
         {
-            InvokeUpdateThreads();
+            lock (patrolSyncRoot)
+            {
+                InvokeUpdateThreads();
+            }
         }
 
         static void InvokeUpdateThreads()
@@ -944,6 +1084,7 @@ namespace DeanCCCore.Core
             {
                 enableThreads.Update();
                 downloadedThreads.Update();
+                quickDownloadingThreads.Update();
                 downloadingThreads.Update();
                 downloadPausedThreads.Update();
                 excludedThreads.Update();
@@ -980,7 +1121,6 @@ namespace DeanCCCore.Core
                 Patrolled(null, EventArgs.Empty);
             }
         }
-
         private static PatrolTimer patrolTimer = new PatrolTimer(state => { Patrol(); });
         /// <summary>
         /// 定期的な動作を実装します
@@ -990,6 +1130,45 @@ namespace DeanCCCore.Core
             get
             {
                 return patrolTimer;
+            }
+        }
+
+        private static void OnQuickPatrolling(System.ComponentModel.CancelEventArgs e)
+        {
+            if (QuickPatrolling != null)
+            {
+                QuickPatrolling(null, e);
+            }
+
+            if (isQuickPatrolling)
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                isQuickPatrolling = true;
+            }
+        }
+
+        private static void OnQuickPatrolled()
+        {
+            isQuickPatrolling = false;
+            if (QuickPatrolled != null)
+            {
+                QuickPatrolled(null, EventArgs.Empty);
+            }
+        }
+        private static PatrolTimer quickPatrolTimer = new PatrolTimer(
+            () => { return 5 * 60 * 1000; },
+            state => { QuickPatrol(); });
+        /// <summary>
+        /// 定期的な動作を実装します
+        /// </summary>
+        public static PatrolTimer QuickPatrolTimer
+        {
+            get
+            {
+                return quickPatrolTimer;
             }
         }
 

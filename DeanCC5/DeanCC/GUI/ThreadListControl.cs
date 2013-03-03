@@ -23,6 +23,8 @@ namespace DeanCC.GUI
         private const string DownloadedThreadDisplayNameFormat = "ダウンロード完了 ({0:N0})";
         private const string DownloadPausedThreadNodeName = "DownloadPausedThreadNode";
         private const string DownloadPausedThreadDisplayNameFormat = "一時停止 ({0:N0})";
+        private const string QuickDownloadingThreadNodeName = "QuickDownloadingThreadNode";
+        private const string QuickDownloadingThreadDisplayNameFormat = "高速ダウンロード中 ({0:N0})";
         private const string DownloadingThreadNodeName = "DownloadingThreadNode";
         private const string DownloadingThreadDisplayNameFormat = "ダウンロード中 ({0:N0})";
         private const string ExcludedThreadNodeName = "ExcludedThreadNode";
@@ -38,6 +40,7 @@ namespace DeanCC.GUI
         {
             InitializeComponent();
             Common.EnableThreads.ListChanged += new ListChangedEventHandler(EnableThreads_ListChanged);
+            Common.QuickDownloadingThreads.ListChanged += new ListChangedEventHandler(QuickDownloadingThreads_ListChanged);
             Common.DownloadingThreads.ListChanged += new ListChangedEventHandler(DownloadingThreads_ListChanged);
             Common.DownloadPausedThreads.ListChanged += new ListChangedEventHandler(DownloadPausedThreads_ListChanged);
             Common.DownloadedThreads.ListChanged += new ListChangedEventHandler(DownloadedThreads_ListChanged);
@@ -65,6 +68,11 @@ namespace DeanCC.GUI
         void DownloadPausedThreads_ListChanged(object sender, ListChangedEventArgs e)
         {
             treeView.Nodes[ThreadNodeName].Nodes[DownloadPausedThreadNodeName].Text = string.Format(DownloadPausedThreadDisplayNameFormat, Common.DownloadPausedThreads.Count);
+        }
+
+        void QuickDownloadingThreads_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            treeView.Nodes[ThreadNodeName].Nodes[QuickDownloadingThreadNodeName].Text = string.Format(QuickDownloadingThreadDisplayNameFormat, Common.QuickDownloadingThreads.Count);
         }
 
         void DownloadingThreads_ListChanged(object sender, ListChangedEventArgs e)
@@ -100,6 +108,9 @@ namespace DeanCC.GUI
                     break;
                 case SelectedThreadListMenu.DownloadedThread:
                     treeView.SelectedNode = treeView.Nodes[ThreadNodeName].Nodes[DownloadedThreadNodeName];
+                    break;
+                case SelectedThreadListMenu.QuickDownloadingThread:
+                    treeView.SelectedNode = treeView.Nodes[ThreadNodeName].Nodes[QuickDownloadingThreadNodeName];
                     break;
                 case SelectedThreadListMenu.DownloadingThread:
                     treeView.SelectedNode = treeView.Nodes[ThreadNodeName].Nodes[DownloadingThreadNodeName];
@@ -139,6 +150,9 @@ namespace DeanCC.GUI
                         break;
                     case DownloadPausedThreadNodeName:
                         menu = SelectedThreadListMenu.DownloadPausedThread;
+                        break;
+                    case QuickDownloadingThreadNodeName:
+                        menu = SelectedThreadListMenu.QuickDownloadingThread;
                         break;
                     case DownloadingThreadNodeName:
                         menu = SelectedThreadListMenu.DownloadingThread;

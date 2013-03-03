@@ -16,6 +16,7 @@ namespace DeanCCCore.Core.Options
             RemoveExpirationImageHash = false;
             HashLifeDate = 30;
             Minimum = false;
+            AutoCheckNewVersion = false;
         }
 
         /// <summary>
@@ -52,5 +53,9 @@ namespace DeanCCCore.Core.Options
         /// 最小化状態にするか
         /// </summary>
         public bool Minimum { get; set; }
+        /// <summary>
+        /// 自動的に最新版を確認するか
+        /// </summary>
+        public bool AutoCheckNewVersion { get; set; }
     }
 }
